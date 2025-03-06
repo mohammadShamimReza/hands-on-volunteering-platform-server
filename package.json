@@ -4,7 +4,19 @@
   "description": "This is the backend for a volunteering platform which is a internship task form RoBenDevs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "postinstall": "prisma generate",
+    "dev": "ts-node-dev --import tsx --respawn --transpile-only src/server.ts",
+    "start": "node dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint:check": "eslint --ignore-path .eslintignore --ext .js,.ts .",
+    "lint:fix": "eslint . --fix",
+    "pretter:check": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+    "prettier:fix": "prettier --write .",
+    "lint:pretter": "npm run lint:check && npm run pretter:check",
+    "build": "prisma generate && tsc"
+  },
+  "lint-staged": {
+    "src/**/*.ts": "npm run lint:pretter"
   },
   "author": "Md Shamim Reza",
   "license": "ISC",
