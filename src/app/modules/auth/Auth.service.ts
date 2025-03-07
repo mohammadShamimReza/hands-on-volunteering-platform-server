@@ -133,8 +133,8 @@ const changePassword = async (
 };
 
 
-const forgotPass = async ({ email, role }: { email: string; role: string }) => {
-  console.log(email, role);
+const forgotPass = async ({ email }: { email: string }) => {
+  console.log(email, 'this is email');
   let isUserExist;
 
   isUserExist = await prisma.user.findFirst({
@@ -155,7 +155,11 @@ const forgotPass = async ({ email, role }: { email: string; role: string }) => {
     '50m',
   );
 
+  console.log(passResetToken, 'this is passResetToken');
+
   const resetLink: string = config.resetlink + `?token=${passResetToken}`;
+
+  console.log(resetLink, 'this is resetLink');
 
   await sendEmail(
     isUserExist.email,
@@ -212,30 +216,31 @@ const resetPassword = async (payload: {
     throw new ApiError(500, 'User not found!');
   }
 
-  const isVarified = await jwtHelpers.verifyToken(
-    token,
-    config.jwt.secret as string,
-  );
-
-  if (id !== isVarified.id || role !== isVarified.role) {
-    throw new ApiError(401, 'Token is invalid or expired!');
+  let verifiedToken;
+  try {
+    verifiedToken = await jwtHelpers.verifyToken(
+      token,
+      config.jwt.secret as string,
+    );
+  } catch (error) {
+    throw new ApiError(500, 'Token is invalid or expired!');
   }
 
-  // const password = await bcrypt.hash(newPassword, Number(config.bycrypt_salt_rounds));
-  let result;
+  if (id !== verifiedToken.id || role !== verifiedToken.role) {
+    throw new ApiError(500, 'Token is invalid or expired!');
+  }
 
-  result = await prisma.user.update({
-    where: {
-      id: user?.id,
-    },
-    data: {
-      password: newPassword,
-    },
+  const hashedPassword = await bcrypt.hash(
+    newPassword,
+    Number(config.bycrypt_salt_rounds),
+  );
+
+  const updatedUser = await prisma.user.update({
+    where: { id },
+    data: { password: hashedPassword },
   });
 
-  console.log(result, 'this is result');
-
-  return result;
+  return updatedUser;
 };
 
 export const AuthService = {
