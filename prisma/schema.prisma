@@ -10,28 +10,152 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id              String   @id @default(uuid())
-  fullName        String
-  email           String   @unique
-  password        String
-  bio             String?
-  // skills         String[]  // Example: ["teaching", "first-aid"]
-  // causes         String[]  // Example: ["education", "environment"]
-  volunteerHours  Int      @default(0)
-  points          Int      @default(0)
-  role            Role     @default(USER)
-  profileImage    String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id             String   @id @default(uuid())
+  fullName       String
+  email          String   @unique
+  password       String
+  bio            String?
+  skills         String
+  causes         String
+  volunteerHours Int      @default(0)
+  points         Int      @default(0)
+  role           Role     @default(USER)
+  profileImage   String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   // Relationships
-
+  eventsCreated Event[]
+  eventsJoined  UserEvent[]
+  teams         TeamMember[]
+  contributions Contribution[]
+  helpRequests  HelpRequest[]
+  helpResponses HelpResponse[]
+  teamsCreated  Team[]
+  leaderboard   Leaderboard[]
 }
 
 enum Role {
   USER
   ADMIN
   ORG
+}
+
+model Event {
+  id            String         @id @default(uuid())
+  title         String
+  description   String?
+  date          DateTime
+  time          String?
+  location      String?
+  category      String?
+  createdById   String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  // Relationships
+  createdBy     User           @relation(fields: [createdById], references: [id])
+  participants  UserEvent[]
+  contributions Contribution[]
+}
+
+model UserEvent {
+  id        String   @id @default(uuid())
+  userId    String
+  eventId   String
+  joinedAt  DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
+
+  @@unique([userId, eventId]) // Ensures a user cannot join an event multiple times
+}
+
+model HelpRequest {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  urgency     Urgency  @default(MEDIUM)
+  createdById String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  createdBy User           @relation(fields: [createdById], references: [id])
+  responses HelpResponse[]
+}
+
+enum Urgency {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model HelpResponse {
+  id        String   @id @default(uuid())
+  userId    String
+  requestId String
+  message   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  request HelpRequest @relation(fields: [requestId], references: [id])
+  user    User        @relation(fields: [userId], references: [id])
+}
+
+model Team {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  type        TeamType     @default(PUBLIC)
+  createdById String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  createdBy   User         @relation(fields: [createdById], references: [id])
+  members     TeamMember[]
+}
+
+enum TeamType {
+  PUBLIC
+  PRIVATE
+}
+
+model TeamMember {
+  id       String   @id @default(uuid())
+  userId   String
+  teamId   String
+  joinedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  team Team @relation(fields: [teamId], references: [id])
+
+  @@unique([userId, teamId]) // Ensures a user cannot join the same team multiple times
+}
+
+model Contribution {
+  id        String   @id @default(uuid())
+  userId    String
+  eventId   String?
+  hours     Int
+  points    Int      @default(0)
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user  User   @relation(fields: [userId], references: [id])
+  event Event? @relation(fields: [eventId], references: [id])
+}
+
+model Leaderboard {
+  id        String   @id @default(uuid())
+  userId    String
+  rank      Int
+  points    Int
+  hours     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
 }
