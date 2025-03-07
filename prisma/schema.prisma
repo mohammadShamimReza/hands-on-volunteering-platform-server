@@ -18,7 +18,7 @@ model User {
   bio            String?
   
   volunteerHours Int      @default(0)
-  points         Int      @default(0)
+  
   role           Role     @default(USER)
   profileImage   String?
   createdAt      DateTime @default(now())

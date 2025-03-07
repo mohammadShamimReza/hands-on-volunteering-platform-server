@@ -1,14 +1,13 @@
-import { User } from '@prisma/client';
-import prisma from '../../../shared/prisma';
+import { PrismaClient, User } from '@prisma/client';
 
-
+const prisma = new PrismaClient();
 
 const getAllFromDb = async (): Promise<User[]> => {
   const result = await prisma.user.findMany({});
   return result;
 };
 
-const getById = async (id: number): Promise<User | null> => {
+const getById = async (id: string): Promise<User | null> => {
   const result = await prisma.user.findUnique({
     where: {
       id,
@@ -18,7 +17,7 @@ const getById = async (id: number): Promise<User | null> => {
 };
 
 const updateUser = async (
-  id: number,
+  id: string,
   payload: Partial<User>,
 ): Promise<User> => {
   const result = await prisma.user.update({
@@ -30,7 +29,7 @@ const updateUser = async (
   return result;
 };
 
-const deleteUsesr = async (id: number): Promise<User> => {
+const deleteUsesr = async (id: string): Promise<User> => {
   const result = await prisma.user.delete({
     where: {
       id,

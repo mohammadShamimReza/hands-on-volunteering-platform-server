@@ -1,5 +1,5 @@
 import express from 'express';
-import { ENUM_USER_ROLE } from '../../../enums/user';
+import { ENUM_USER_ROLE } from '../../../enums/user.ts';
 import auth from '../../middleware/auth';
 import validateRequest from '../../middleware/validateRequest';
 import { AssetController } from './Asset.controller';

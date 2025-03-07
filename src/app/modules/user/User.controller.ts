@@ -1,10 +1,9 @@
 import { User } from '@prisma/client';
 import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
-import { StatusCodes } from 'http-status-codes';
 import { userService } from './User.service';
-
 
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   const result = await userService.getAllFromDb();
@@ -18,7 +17,7 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
 
 const getById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const result = await userService.getById(Number(id));
+  const result = await userService.getById(id);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -30,7 +29,7 @@ const getById = catchAsync(async (req: Request, res: Response) => {
 const updateUser = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const payload = req.body;
-  const result = await userService.updateUser(Number(id), payload);
+  const result = await userService.updateUser(id, payload);
 
   sendResponse<User>(res, {
     statusCode: StatusCodes.OK,
@@ -42,7 +41,7 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
 
 const deleteUser = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
-  const result = await userService.deleteUsesr(Number(id));
+  const result = await userService.deleteUsesr(id);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
