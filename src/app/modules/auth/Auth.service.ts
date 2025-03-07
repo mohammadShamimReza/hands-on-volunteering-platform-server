@@ -11,29 +11,18 @@ import { IChangePassword } from './auth.interface.js';
 import { sendEmail } from './sendResetMail.js';
 
 const signUp = async (data: User) => {
-  const userRole = data.role;
+  const res = await prisma.user.create({ data });
 
-  let result: {
-    name: string;
-    id: number;
-    email: string;
-    password: string;
-    phone: number;
-    address: string | null;
-    profile_image: string | null;
-    role: string;
-  };
+  console.log(res, 'this is res');
 
- const res = await prisma.user.create({ data });
-
- const { email, role, id, password } = res;
+  const { email, role, id } = res;
   const accessToken = jwtHelpers.createToken(
     { email, role, id },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string,
   );
   const refreshToken = jwtHelpers.createToken(
-    { email, password, id },
+    { email, role, id },
     config.jwt.refresh_secret as Secret,
     config.jwt.refresh_expires_in as string,
   );

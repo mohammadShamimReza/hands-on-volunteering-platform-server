@@ -1,9 +1,9 @@
 import { z } from 'zod';
 
-const create = z.object({
+export const create = z.object({
   body: z.object({
-    name: z.string({
-      required_error: 'Name is required',
+    fullName: z.string({
+      required_error: 'Full Name is required',
     }),
     email: z
       .string({
@@ -15,11 +15,20 @@ const create = z.object({
         required_error: 'Password is required',
       })
       .min(8, 'Password must be at least 8 characters'),
-    address: z.string({ required_error: 'address is required' }), // Address is optional in the model
-    phone: z.number({ required_error: 'Phone number is required' }), // Phone number is optional in the model
-    role: z.string({ required_error: 'role is required' }),
+    bio: z.string().optional(),
+    role: z.enum(['USER', 'ADMIN', 'ORG'], {
+      required_error: 'Role is required',
+    }),
+    profileImage: z.string().url('Invalid URL format').optional(),
+    skills: z.string({
+      required_error: 'Skills are required',
+    }),
+    causes: z.string({
+      required_error: 'Causes are required',
+    }),
   }),
 });
+
 
 const login = z.object({
   body: z.object({
