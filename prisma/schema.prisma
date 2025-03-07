@@ -16,8 +16,7 @@ model User {
   email          String   @unique
   password       String
   bio            String?
-  skills         String
-  causes         String
+  
   volunteerHours Int      @default(0)
   points         Int      @default(0)
   role           Role     @default(USER)
@@ -26,6 +25,8 @@ model User {
   updatedAt      DateTime @updatedAt
 
   // Relationships
+  skills        UserSkill[]
+  causes        UserCause[]
   eventsCreated Event[]
   eventsJoined  UserEvent[]
   teams         TeamMember[]
@@ -35,6 +36,27 @@ model User {
   teamsCreated  Team[]
   leaderboard   Leaderboard[]
 }
+
+model UserSkill {
+  id     String @id @default(uuid())
+  userId String
+  skill  String 
+
+  user   User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, skill]) 
+}
+
+model UserCause {
+  id      String @id @default(uuid())
+  userId  String
+  cause   String  
+
+  user    User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, cause]) 
+}
+
 
 enum Role {
   USER
@@ -51,6 +73,7 @@ model Event {
   location      String?
   category      String?
   createdById   String
+  visibility    Visibility @default(PUBLIC)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   // Relationships
@@ -59,10 +82,16 @@ model Event {
   contributions Contribution[]
 }
 
+enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
 model UserEvent {
   id        String   @id @default(uuid())
   userId    String
   eventId   String
+  status    EventStatus @default(JOINED)
   joinedAt  DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -73,11 +102,18 @@ model UserEvent {
   @@unique([userId, eventId]) // Ensures a user cannot join an event multiple times
 }
 
+enum EventStatus {
+  JOINED
+  COMPLETED
+  CANCELLED
+}
+
 model HelpRequest {
   id          String   @id @default(uuid())
   title       String
   description String?
   urgency     Urgency  @default(MEDIUM)
+  status      HelpStatus @default(OPEN)
   createdById String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -91,6 +127,11 @@ enum Urgency {
   MEDIUM
   HIGH
   URGENT
+}
+
+enum HelpStatus {
+ OPEN
+  CLOSED
 }
 
 model HelpResponse {
@@ -113,6 +154,7 @@ model Team {
   createdById String
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
+
   createdBy   User         @relation(fields: [createdById], references: [id])
   members     TeamMember[]
 }
@@ -141,6 +183,7 @@ model Contribution {
   hours     Int
   points    Int      @default(0)
   verified  Boolean  @default(false)
+  isVerified Boolean @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
