@@ -167,12 +167,12 @@ enum HelpStatus {
 model comment {
   id        String   @id @default(uuid())
   userId    String
-  requestId String
+  postId String
   message   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  request Post @relation(fields: [requestId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
   user    User @relation(fields: [userId], references: [id])
 }
 
