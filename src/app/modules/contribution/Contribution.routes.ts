@@ -8,8 +8,8 @@ import { ContributionValidation } from './Contribution.validation';
 
 const router = express.Router();
 
-router.get('/:id', ContributionController.getById);
-router.get('/', ContributionController.getAllFromDB);
+router.get('/log-hours', ContributionController.getLogHours);
+router.get('/leaderboard', ContributionController.getLearderboard);
 
 router.post(
   '/create',

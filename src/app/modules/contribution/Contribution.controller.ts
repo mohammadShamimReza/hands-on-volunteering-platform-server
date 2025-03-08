@@ -5,10 +5,11 @@ import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { contributionService } from './Contribution.service';
 
-const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-      const { category, location, visibility } = req.query;
+const getLogHours = catchAsync(async (req: Request, res: Response) => {
 
-  const result = await contributionService.getAllFromDb();
+  const { userId, eventId } = req.body;
+
+  const result = await contributionService.getLogHours({ userId, eventId });
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -17,13 +18,12 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-const getById = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const result = await contributionService.getById(id);
+const getLearderboard = catchAsync(async (req: Request, res: Response) => {
+  const result = await contributionService.getLearderboard();
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'Contribution fetched successfully',
+    message: 'Leaderboard fetched successfully',
     data: result,
   });
 });
@@ -76,9 +76,8 @@ const deleteContribution = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const ContributionController = {
-
-  getAllFromDB,
-  getById,
+  getLogHours,
+  getLearderboard,
   createContribution,
   // registerContribution,
   updateContribution,
