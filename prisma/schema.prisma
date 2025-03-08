@@ -96,13 +96,14 @@ model Event {
   date          DateTime
   time          String?
   location      String?
-  category      String?
+  category      causes
   createdById   String
   visibility    Visibility @default(PUBLIC)
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   // Relationships
   createdBy     User           @relation(fields: [createdById], references: [id])
+  
   participants  UserEvent[]
   contributions Contribution[]
 }
@@ -124,7 +125,7 @@ model UserEvent {
   user  User  @relation(fields: [userId], references: [id])
   event Event @relation(fields: [eventId], references: [id])
 
-  @@unique([userId, eventId]) // Ensures a user cannot join an event multiple times
+  @@unique([userId, eventId]) // Ensures a user cannot join the same event multiple times
 }
 
 enum EventStatus {
