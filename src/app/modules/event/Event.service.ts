@@ -1,9 +1,33 @@
-import { PrismaClient, Event } from '@prisma/client';
+import { Event, PrismaClient, UserEvent, causes } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const getAllFromDb = async (): Promise<Event[]> => {
-  const result = await prisma.event.findMany({});
+const getAllFromDb = async (filters: {
+  category?: string;
+  location?: string;
+  visibility?: 'PUBLIC' | 'PRIVATE';
+}): Promise<Event[]> => {
+  const { category, location, visibility } = filters;
+
+  const result = await prisma.event.findMany({
+    where: {
+      endDateTime: {
+        gte: new Date(),
+      },
+      category: category ? (category as causes) : undefined,
+      location: location
+        ? { contains: location, mode: 'insensitive' }
+        : undefined,
+      visibility: visibility ? visibility : undefined,
+    },
+    orderBy: {
+      date: 'asc',
+    },
+    include: {
+      createdBy: true,
+      participants: true,
+    },
+  });
   return result;
 };
 
@@ -13,6 +37,21 @@ const getById = async (id: string): Promise<Event | null> => {
       id,
     },
   });
+  return result;
+};
+
+const createEvent = async (payload: Event): Promise<Event> => {
+  const result = await prisma.event.create({
+    data: payload,
+  });
+  return result;
+};
+
+const registerEvent = async (payload: UserEvent): Promise<UserEvent> => {
+  const result = await prisma.userEvent.create({
+    data: payload,
+  });
+  console.log(result, 'this is register event');
   return result;
 };
 
@@ -41,6 +80,8 @@ const deleteUsesr = async (id: string): Promise<Event> => {
 export const eventService = {
   getAllFromDb,
   getById,
+  createEvent,
+  registerEvent,
   updateEvent,
   deleteUsesr,
 };

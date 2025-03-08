@@ -46,12 +46,12 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'Staff deleted successfully',
+    message: 'User deleted successfully',
     data: result,
   });
 });
 
-export const StaffController = {
+export const UserController = {
 
   getAllFromDB,
   getById,

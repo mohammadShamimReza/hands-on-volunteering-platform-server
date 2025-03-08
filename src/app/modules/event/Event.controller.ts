@@ -6,7 +6,13 @@ import sendResponse from '../../../shared/sendResponse';
 import { eventService } from './Event.service';
 
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await eventService.getAllFromDb();
+      const { category, location, visibility } = req.query;
+
+  const result = await eventService.getAllFromDb({
+    category: category as string,
+    location: location as string,
+    visibility: visibility as 'PUBLIC' | 'PRIVATE',
+  });
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -22,6 +28,27 @@ const getById = catchAsync(async (req: Request, res: Response) => {
     statusCode: StatusCodes.OK,
     success: true,
     message: 'Event fetched successfully',
+    data: result,
+  });
+});
+
+const createEvent = catchAsync(async (req: Request, res: Response) => {
+  const payload = req.body;
+  const result = await eventService.createEvent(payload); // createEvent is not defined
+  sendResponse(res, {
+    statusCode: StatusCodes.CREATED,
+    success: true,
+    message: 'Event created successfully',
+    data: result,
+  });
+});
+const registerEvent = catchAsync(async (req: Request, res: Response) => {
+  const payload = req.body;
+  const result = await eventService.registerEvent(payload); // createEvent is not defined
+  sendResponse(res, {
+    statusCode: StatusCodes.CREATED,
+    success: true,
+    message: 'Registration created successfully',
     data: result,
   });
 });
@@ -46,15 +73,17 @@ const deleteEvent = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'Staff deleted successfully',
+    message: 'Event deleted successfully',
     data: result,
   });
 });
 
-export const StaffController = {
+export const EventController = {
 
   getAllFromDB,
   getById,
+  createEvent,
+  registerEvent,
   updateEvent,
   deleteEvent,
 };

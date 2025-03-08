@@ -3,20 +3,32 @@ import express from 'express';
 
 import auth from '../../middleware/auth';
 import validateRequest from '../../middleware/validateRequest';
-import { StaffController } from './Event.controller';
+import { EventController } from './Event.controller';
 import { EventValidation } from './Event.validation';
 
 const router = express.Router();
 
-router.get('/:id', StaffController.getById);
-router.get('/', StaffController.getAllFromDB);
+router.get('/:id', EventController.getById);
+router.get('/', EventController.getAllFromDB);
+
+router.post(
+  '/create',
+  validateRequest(EventValidation.createEvent),
+  EventController.createEvent,
+);
+
+router.post(
+  '/register-event',
+  validateRequest(EventValidation.registerEvent),
+  EventController.registerEvent,
+);
 
 router.patch(
   '/:id',
   validateRequest(EventValidation.updateEvent),
-  StaffController.updateEvent,
+  EventController.updateEvent,
 );
 
-router.delete('/:id', StaffController.deleteEvent);
+router.delete('/:id', EventController.deleteEvent);
 
 export const EventRoutes = router;
