@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 
 import { User } from '@prisma/client';
-
 import { JwtPayload, Secret } from 'jsonwebtoken';
 import config from '../../../config/index.js';
 import ApiError from '../../../errors/ApiError.js';
@@ -9,8 +8,19 @@ import { jwtHelpers } from '../../../helpers/jwtHelpers.js';
 import prisma from '../../../shared/prisma.js';
 import { IChangePassword } from './auth.interface.js';
 import { sendEmail } from './sendResetMail.js';
+const bcrypt = require('bcrypt');
 
 const signUp = async (data: User) => {
+  // hash password before saving
+  const { password: newPassword } = data;
+
+  const newHashedPassword = await bcrypt.hash(
+    newPassword,
+    Number(config.bycrypt_salt_rounds),
+  );
+
+  data.password = newHashedPassword;
+
   const res = await prisma.user.create({ data });
 
   console.log(res, 'this is res');
@@ -33,36 +43,25 @@ const signUp = async (data: User) => {
   };
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const logIn = async (LoginData: { email: string; password: string }) => {
   const { email, password } = LoginData;
 
-  const user = await prisma.user.findMany();
-
-  console.log(user, 'this is user');
   let isUserExist;
   isUserExist = await prisma.user.findFirst({
     where: {
       email,
     },
   });
-
   if (!isUserExist) {
     throw new ApiError(500, 'user not found');
   }
-  const { role, id } = isUserExist;
-
-  let isUserExistWithPassword;
-  isUserExistWithPassword = await prisma.user.findFirst({
-    where: {
-      email,
-      password,
-    },
-  });
-
-  if (!isUserExistWithPassword) {
-    throw new ApiError(500, 'password not matched');
+  const match = await bcrypt.compare(password, isUserExist.password);
+  console.log(match, 'this is match');
+  if (!match) {
+    throw new ApiError(500, 'Password is incorrect');
   }
+
+  const { role, id } = isUserExist;
 
   const accessToken = jwtHelpers.createToken(
     { email, role, id },
@@ -84,37 +83,58 @@ const logIn = async (LoginData: { email: string; password: string }) => {
 const changePassword = async (
   user: JwtPayload | null,
   payload: IChangePassword,
-): Promise<User> => {
+): Promise<{ message: string }> => {
+  if (!user?.userId) {
+    throw new ApiError(500, 'User is not authenticated');
+  }
+
   const { oldPassword, newPassword } = payload;
 
-  const isUserExist = await prisma.user.findUnique({
-    where: {
-      id: user?.id,
+  // ✅ 1. Check if the user exists (Selecting password field explicitly)
+  const existingUser = await prisma.user.findUnique({
+    where: { id: user.userId },
+    select: {
+      id: true,
+      password: true, // Prisma does not return password by default
     },
   });
 
-  if (!isUserExist) {
-    throw new ApiError(500, 'User does not exist');
-  }
-  // // checking old password
-  if (isUserExist.password !== oldPassword) {
-    throw new ApiError(500, 'Old Password is incorrect');
+  if (!existingUser || !existingUser.password) {
+    throw new ApiError(400, 'User does not exist');
   }
 
-  const result = await prisma.user.update({
-    where: {
-      id: user?.id,
-    },
+  // ✅ 2. Check if the old password matches
+  const isPasswordMatched = await bcrypt.compare(
+    oldPassword,
+    existingUser.password,
+  );
+
+  if (!isPasswordMatched) {
+    throw new ApiError(500, 'Old password is incorrect');
+  }
+
+  // ✅ 3. Hash new password
+  const newHashedPassword = await bcrypt.hash(
+    newPassword,
+    Number(config.bycrypt_salt_rounds),
+  ); // Adjust salt rounds
+
+  // ✅ 4. Update the user's password in the database
+  await prisma.user.update({
+    where: { id: user.userId },
     data: {
-      password: newPassword,
+      password: newHashedPassword,
     },
   });
 
-  return result;
+  return {
+    message: 'Password changed',
+  };
 };
 
-const forgotPass = async ({ email, role }: { email: string; role: string }) => {
-  console.log(email, role);
+
+const forgotPass = async ({ email }: { email: string }) => {
+  console.log(email, 'this is email');
   let isUserExist;
 
   isUserExist = await prisma.user.findFirst({
@@ -135,9 +155,13 @@ const forgotPass = async ({ email, role }: { email: string; role: string }) => {
     '50m',
   );
 
+  console.log(passResetToken, 'this is passResetToken');
+
   const resetLink: string = config.resetlink + `?token=${passResetToken}`;
-  console.log(resetLink);
-  await sendEmail(
+
+  console.log(isUserExist.email, 'this is user mail');
+
+  const mailAnswer = await sendEmail(
     isUserExist.email,
     `
       <div>
@@ -148,9 +172,11 @@ const forgotPass = async ({ email, role }: { email: string; role: string }) => {
   `,
   );
 
-  return {
-    message: 'Check your email!',
-  };
+ console.log(mailAnswer, 'this is mailAnswer');
+
+ return {
+   message: mailAnswer,
+ };
 };
 
 const me = async (userData: JwtPayload) => {
@@ -192,30 +218,31 @@ const resetPassword = async (payload: {
     throw new ApiError(500, 'User not found!');
   }
 
-  const isVarified = await jwtHelpers.verifyToken(
-    token,
-    config.jwt.secret as string,
-  );
-
-  if (id !== isVarified.id || role !== isVarified.role) {
-    throw new ApiError(401, 'Token is invalid or expired!');
+  let verifiedToken;
+  try {
+    verifiedToken = await jwtHelpers.verifyToken(
+      token,
+      config.jwt.secret as string,
+    );
+  } catch (error) {
+    throw new ApiError(500, 'Token is invalid or expired!');
   }
 
-  // const password = await bcrypt.hash(newPassword, Number(config.bycrypt_salt_rounds));
-  let result;
+  if (id !== verifiedToken.id || role !== verifiedToken.role) {
+    throw new ApiError(500, 'Token is invalid or expired!');
+  }
 
-  result = await prisma.user.update({
-    where: {
-      id: user?.id,
-    },
-    data: {
-      password: newPassword,
-    },
+  const hashedPassword = await bcrypt.hash(
+    newPassword,
+    Number(config.bycrypt_salt_rounds),
+  );
+
+  const updatedUser = await prisma.user.update({
+    where: { id },
+    data: { password: hashedPassword },
   });
 
-  console.log(result, 'this is result');
-
-  return result;
+  return updatedUser;
 };
 
 export const AuthService = {
