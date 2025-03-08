@@ -11,26 +11,25 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(uuid())
-  fullName       String
-  email          String   @unique
-  password       String
-  bio            String?  
-  skills         skills[]
-  causes         causes[]
-  role           Role     @default(USER)
-  profileImage   String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id           String   @id @default(uuid())
+  fullName     String
+  email        String   @unique
+  password     String
+  bio          String?
+  skills       skills[]
+  causes       causes[]
+  role         Role     @default(USER)
+  profileImage String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
- 
   eventsCreated Event[]
   eventsJoined  UserEvent[]
-  teams         TeamMember[]
+  teams         OrganizationMember[]
   contributions Contribution[]
-  helpRequests  HelpRequest[]
-  helpResponses HelpResponse[]
-  teamsCreated  Team[]
+  helpRequests  Post[]
+  helpResponses comment[]
+  teamsCreated  Organization[]
   leaderboard   Leaderboard[]
 }
 
@@ -90,22 +89,22 @@ enum causes {
 }
 
 model Event {
-  id            String         @id @default(uuid())
-  title         String
-  description   String?
-  date          DateTime
-  time          String?
-  location      String?
-  category      causes
-  endDateTime   DateTime
+  id              String     @id @default(uuid())
+  title           String
+  description     String?
+  date            DateTime
+  time            String?
+  location        String?
+  category        causes
+  endDateTime     DateTime
   requiredMembers Int
-  createdById   String
-  visibility    Visibility @default(PUBLIC)
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  createdById     String
+  visibility      Visibility @default(PUBLIC)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
   // Relationships
-  createdBy     User           @relation(fields: [createdById], references: [id])
-  
+  createdBy       User       @relation(fields: [createdById], references: [id])
+
   participants  UserEvent[]
   contributions Contribution[]
 }
@@ -116,13 +115,13 @@ enum Visibility {
 }
 
 model UserEvent {
-  id        String   @id @default(uuid())
+  id        String      @id @default(uuid())
   userId    String
   eventId   String
   status    EventStatus @default(JOINED)
-  joinedAt  DateTime @default(now())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  joinedAt  DateTime    @default(now())
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 
   user  User  @relation(fields: [userId], references: [id])
   event Event @relation(fields: [eventId], references: [id])
@@ -136,18 +135,21 @@ enum EventStatus {
   CANCELLED
 }
 
-model HelpRequest {
-  id          String   @id @default(uuid())
-  title       String
-  description String?
-  urgency     Urgency  @default(MEDIUM)
-  status      HelpStatus @default(OPEN)
-  createdById String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+model Post {
+  id                      String     @id @default(uuid())
+  title                   String
+  description             String?
+  urgency                 Urgency    @default(MEDIUM)
+  status                  HelpStatus @default(OPEN)
+  createdById             String?
+  createdByOrganizationId String?
+  createdAt               DateTime   @default(now())
+  updatedAt               DateTime   @updatedAt
 
-  createdBy User           @relation(fields: [createdById], references: [id])
-  responses HelpResponse[]
+  createdBy             User?         @relation(fields: [createdById], references: [id])
+  createdByOrganization Organization? @relation(fields: [createdByOrganizationId], references: [id])
+
+  responses comment[]
 }
 
 enum Urgency {
@@ -158,11 +160,11 @@ enum Urgency {
 }
 
 enum HelpStatus {
- OPEN
+  OPEN
   CLOSED
 }
 
-model HelpResponse {
+model comment {
   id        String   @id @default(uuid())
   userId    String
   requestId String
@@ -170,50 +172,52 @@ model HelpResponse {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  request HelpRequest @relation(fields: [requestId], references: [id])
-  user    User        @relation(fields: [userId], references: [id])
+  request Post @relation(fields: [requestId], references: [id])
+  user    User @relation(fields: [userId], references: [id])
 }
 
-model Team {
-  id          String       @id @default(uuid())
-  name        String
-  description String?
-  type        TeamType     @default(PUBLIC)
-  createdById String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+model Organization {
+  id           String           @id @default(uuid())
+  name         String
+  description  String?
+  type         OrganizationType @default(PUBLIC)
+  createdById  String
+  helpRequests Post[]
 
-  createdBy   User         @relation(fields: [createdById], references: [id])
-  members     TeamMember[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  createdBy User                 @relation(fields: [createdById], references: [id])
+  members   OrganizationMember[]
 }
 
-enum TeamType {
+enum OrganizationType {
   PUBLIC
   PRIVATE
 }
 
-model TeamMember {
+model OrganizationMember {
   id       String   @id @default(uuid())
   userId   String
   teamId   String
   joinedAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
-  team Team @relation(fields: [teamId], references: [id])
+  user User         @relation(fields: [userId], references: [id])
+  team Organization @relation(fields: [teamId], references: [id])
 
   @@unique([userId, teamId]) // Ensures a user cannot join the same team multiple times
 }
 
 model Contribution {
-  id        String   @id @default(uuid())
-  userId    String
-  eventId   String?
-  hours     Int
-  points    Int      @default(0)
-  verified  Boolean  @default(false)
-  isVerified Boolean @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         String   @id @default(uuid())
+  userId     String
+  eventId    String?
+  hours      Int
+  points     Int      @default(0)
+  verified   Boolean  @default(false)
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   user  User   @relation(fields: [userId], references: [id])
   event Event? @relation(fields: [eventId], references: [id])
