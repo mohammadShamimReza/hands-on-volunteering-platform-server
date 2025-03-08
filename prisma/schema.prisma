@@ -97,6 +97,8 @@ model Event {
   time          String?
   location      String?
   category      causes
+  endDateTime   DateTime
+  requiredMembers Int
   createdById   String
   visibility    Visibility @default(PUBLIC)
   createdAt     DateTime       @default(now())

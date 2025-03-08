@@ -17,6 +17,12 @@ router.post(
   EventController.createEvent,
 );
 
+router.post(
+  '/register-event',
+  validateRequest(EventValidation.registerEvent),
+  EventController.registerEvent,
+);
+
 router.patch(
   '/:id',
   validateRequest(EventValidation.updateEvent),

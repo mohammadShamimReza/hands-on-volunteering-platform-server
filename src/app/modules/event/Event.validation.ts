@@ -1,3 +1,4 @@
+import e from 'express';
 import { z } from 'zod';
 
 export const CausesEnum = z.enum([
@@ -29,11 +30,13 @@ export const VisibilityEnum = z.enum(['PUBLIC', 'PRIVATE']);
 const createEvent = z.object({
   body: z.object({
     title: z.string({ required_error: 'Event title is required' }),
-    description: z.string().optional(),
+    description: z.string({ required_error: 'Event description is required' }),
     date: z.string({ required_error: 'Event date is required' }),
-    time: z.string().optional(),
-    location: z.string().optional(),
+    time: z.string({ required_error: 'Event time is required' }),
+    location: z.string({ required_error: 'Event location is required' }),
     category: CausesEnum,
+    endDateTime: z.string({ required_error: 'Event date is required' }),
+    requiredMembers: z.number({ required_error: 'Required members is required' }),
     visibility: VisibilityEnum.default('PUBLIC'), // Default to PUBLIC
     createdById: z.string({ required_error: 'CreatedById is required' }),
   }),
@@ -48,6 +51,8 @@ const updateEvent = z.object({
     time: z.string().optional(),
     location: z.string().optional(),
     category: z.array(CausesEnum).optional(),
+    requiredMembers: z.number().optional(),
+    endDateTime: z.string().optional(),
     visibility: VisibilityEnum.optional(),
   }),
 });

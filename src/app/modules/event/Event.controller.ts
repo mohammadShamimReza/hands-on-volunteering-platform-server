@@ -6,7 +6,13 @@ import sendResponse from '../../../shared/sendResponse';
 import { eventService } from './Event.service';
 
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-  const result = await eventService.getAllFromDb();
+      const { category, location, visibility } = req.query;
+
+  const result = await eventService.getAllFromDb({
+    category: category as string,
+    location: location as string,
+    visibility: visibility as 'PUBLIC' | 'PRIVATE',
+  });
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -33,6 +39,16 @@ const createEvent = catchAsync(async (req: Request, res: Response) => {
     statusCode: StatusCodes.CREATED,
     success: true,
     message: 'Event created successfully',
+    data: result,
+  });
+});
+const registerEvent = catchAsync(async (req: Request, res: Response) => {
+  const payload = req.body;
+  const result = await eventService.registerEvent(payload); // createEvent is not defined
+  sendResponse(res, {
+    statusCode: StatusCodes.CREATED,
+    success: true,
+    message: 'Registration created successfully',
     data: result,
   });
 });
@@ -67,6 +83,7 @@ export const EventController = {
   getAllFromDB,
   getById,
   createEvent,
+  registerEvent,
   updateEvent,
   deleteEvent,
 };
