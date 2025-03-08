@@ -28,7 +28,7 @@ model User {
   teams         OrganizationMember[]
   contributions Contribution[]
   helpRequests  Post[]
-  helpResponses comment[]
+  helpResponses Comment[]
   teamsCreated  Organization[]
   leaderboard   Leaderboard[]
 }
@@ -149,7 +149,7 @@ model Post {
   createdBy             User?         @relation(fields: [createdById], references: [id])
   createdByOrganization Organization? @relation(fields: [createdByOrganizationId], references: [id])
 
-  responses comment[]
+  responses Comment[]
 }
 
 enum Urgency {
@@ -164,7 +164,7 @@ enum HelpStatus {
   CLOSED
 }
 
-model comment {
+model Comment {
   id        String   @id @default(uuid())
   userId    String
   postId String
