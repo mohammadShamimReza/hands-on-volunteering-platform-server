@@ -31,6 +31,7 @@ model User {
   helpResponses Comment[]
   teamsCreated  Team[]
   leaderboard   Leaderboard[]
+  certificates  Certificate[]
 }
 
 enum Role {
@@ -212,16 +213,38 @@ model Contribution {
   id         String   @id @default(uuid())
   userId     String
   eventId    String?
-  hours      Int
+  hours      Int      @default(0)
   points     Int      @default(0)
   verified   Boolean  @default(false)
-  isVerified Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   user  User   @relation(fields: [userId], references: [id])
   event Event? @relation(fields: [eventId], references: [id])
+
+  @@unique([userId, eventId]) // Prevents duplicate entries for the same event
+
+  validations Verification[]
 }
+
+
+model Verification {
+  id            String   @id @default(uuid())
+  contributionId String
+  verifierId    String
+  status        VerificationStatus @default(PENDING)
+  createdAt     DateTime @default(now())
+
+  contribution Contribution @relation(fields: [contributionId], references: [id])
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+
 
 model Leaderboard {
   id        String   @id @default(uuid())
@@ -233,4 +256,20 @@ model Leaderboard {
   updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id])
+}
+
+
+model Certificate {
+  id         String   @id @default(uuid())
+  userId     String
+  level      CertificateLevel
+  issuedAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+enum CertificateLevel {
+  BRONZE
+  SILVER
+  GOLD
 }
