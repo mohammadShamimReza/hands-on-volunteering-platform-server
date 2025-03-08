@@ -1,0 +1,89 @@
+import { Event } from '@prisma/client';
+import { Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import catchAsync from '../../../shared/catchAsync';
+import sendResponse from '../../../shared/sendResponse';
+import { eventService } from './Post.service';
+
+const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
+      const { category, location, visibility } = req.query;
+
+  const result = await eventService.getAllFromDb({
+    category: category as string,
+    location: location as string,
+    visibility: visibility as 'PUBLIC' | 'PRIVATE',
+  });
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'events fetched successfully',
+    data: result,
+  });
+});
+
+const getById = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await eventService.getById(id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Event fetched successfully',
+    data: result,
+  });
+});
+
+const createEvent = catchAsync(async (req: Request, res: Response) => {
+  const payload = req.body;
+  const result = await eventService.createEvent(payload); // createEvent is not defined
+  sendResponse(res, {
+    statusCode: StatusCodes.CREATED,
+    success: true,
+    message: 'Event created successfully',
+    data: result,
+  });
+});
+const registerEvent = catchAsync(async (req: Request, res: Response) => {
+  const payload = req.body;
+  const result = await eventService.registerEvent(payload); // createEvent is not defined
+  sendResponse(res, {
+    statusCode: StatusCodes.CREATED,
+    success: true,
+    message: 'Registration created successfully',
+    data: result,
+  });
+});
+
+const updateEvent = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const payload = req.body;
+  const result = await eventService.updateEvent(id, payload);
+
+  sendResponse<Event>(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Event updated successfully',
+    data: result,
+  });
+});
+
+const deleteEvent = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const result = await eventService.deleteUsesr(id);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Event deleted successfully',
+    data: result,
+  });
+});
+
+export const EventController = {
+
+  getAllFromDB,
+  getById,
+  createEvent,
+  registerEvent,
+  updateEvent,
+  deleteEvent,
+};
