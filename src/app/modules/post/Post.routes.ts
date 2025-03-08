@@ -3,32 +3,32 @@ import express from 'express';
 
 import auth from '../../middleware/auth';
 import validateRequest from '../../middleware/validateRequest';
-import { EventController } from './Post.controller';
-import { EventValidation } from './Post.validation';
+import { PostController } from './Post.controller';
+import { PostValidation } from './Post.validation';
 
 const router = express.Router();
 
-router.get('/:id', EventController.getById);
-router.get('/', EventController.getAllFromDB);
+router.get('/:id', PostController.getById);
+router.get('/', PostController.getAllFromDB);
 
 router.post(
   '/create',
-  validateRequest(EventValidation.createEvent),
-  EventController.createEvent,
+  validateRequest(PostValidation.createPost),
+  PostController.createPost,
 );
 
-router.post(
-  '/register-event',
-  validateRequest(EventValidation.registerEvent),
-  EventController.registerEvent,
-);
+// router.post(
+//   '/register-post',
+//   validateRequest(PostValidation.registerPost),
+//   PostController.registerPost,
+// );
 
 router.patch(
   '/:id',
-  validateRequest(EventValidation.updateEvent),
-  EventController.updateEvent,
+  validateRequest(PostValidation.updatePost),
+  PostController.updatePost,
 );
 
-router.delete('/:id', EventController.deleteEvent);
+router.delete('/:id', PostController.deletePost);
 
-export const EventRoutes = router;
+export const PostRoutes = router;

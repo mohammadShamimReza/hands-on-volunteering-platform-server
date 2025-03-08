@@ -1,73 +1,44 @@
-import e from 'express';
 import { z } from 'zod';
 
-export const CausesEnum = z.enum([
-  'Animal',
-  'Arts',
-  'Children',
-  'Community',
-  'Crisis',
-  'Culture',
-  'Disability',
-  'Disaster',
-  'Education',
-  'Elderly',
-  'Environment',
-  'Health',
-  'Human',
-  'Humanitarian',
-  'International',
-  'Poverty',
-  'Rights',
-  'Social',
-  'Sports',
-  'Technology',
-]);
-// ✅ Define ENUM for Visibility
-export const VisibilityEnum = z.enum(['PUBLIC', 'PRIVATE']);
+// ✅ Enum Validation for Urgency & HelpStatus (Matches Prisma)
+export const UrgencyEnum = z.enum(['LOW', 'MEDIUM', 'HIGH', 'URGENT']);
+export const HelpStatusEnum = z.enum(['OPEN', 'CLOSED']); // Add any other statuses if needed
 
-// ✅ Create Event Validation
-const createEvent = z.object({
+// ✅ Create Post Validation
+export const createPost = z.object({
   body: z.object({
-    title: z.string({ required_error: 'Event title is required' }),
-    description: z.string({ required_error: 'Event description is required' }),
-    date: z.string({ required_error: 'Event date is required' }),
-    time: z.string({ required_error: 'Event time is required' }),
-    location: z.string({ required_error: 'Event location is required' }),
-    category: CausesEnum,
-    endDateTime: z.string({ required_error: 'Event date is required' }),
-    requiredMembers: z.number({ required_error: 'Required members is required' }),
-    visibility: VisibilityEnum.default('PUBLIC'), // Default to PUBLIC
-    createdById: z.string({ required_error: 'CreatedById is required' }),
+    title: z.string({ required_error: 'Title is required' }),
+    description: z.string().optional(),
+    urgency: UrgencyEnum.default('MEDIUM'), // ✅ Uses the enum validation
+    status: HelpStatusEnum.default('OPEN'), // ✅ Uses the enum validation
+    createdById: z.string().optional(), // ✅ Optional, as either user or org creates it
+    createdByOrganizationId: z.string().optional(), // ✅ Optional, as either user or org creates it
   }),
 });
 
-// ✅ Update Event Validation
-const updateEvent = z.object({
+export const updatePost = z.object({
   body: z.object({
     title: z.string().optional(),
     description: z.string().optional(),
-    date: z.string().optional(),
-    time: z.string().optional(),
-    location: z.string().optional(),
-    category: z.array(CausesEnum).optional(),
-    requiredMembers: z.number().optional(),
-    endDateTime: z.string().optional(),
-    visibility: VisibilityEnum.optional(),
+    urgency: UrgencyEnum.optional(),
+    status: HelpStatusEnum.optional(),
+    createdById: z.string().optional(),
+    createdByOrganizationId: z.string().optional(),
   }),
 });
 
-// ✅ Register for Event Validation
-const registerEvent = z.object({
+
+// ✅ Register for Post Validation
+const registerPost = z.object({
   body: z.object({
     userId: z.string({ required_error: 'UserId is required' }),
-    eventId: z.string({ required_error: 'EventId is required' }),
+    postId: z.string({ required_error: 'PostId is required' }),
   }),
 });
 
 // ✅ Export Validations
-export const EventValidation = {
-  createEvent,
-  updateEvent,
-  registerEvent,
+export const PostValidation = {
+  createPost,
+  updatePost,
+  registerPost,
 };

@@ -1,38 +1,17 @@
-import { Event, PrismaClient, UserEvent, causes } from '@prisma/client';
+import { Post, PrismaClient,  causes } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const getAllFromDb = async (filters: {
-  category?: string;
-  location?: string;
-  visibility?: 'PUBLIC' | 'PRIVATE';
-}): Promise<Event[]> => {
-  const { category, location, visibility } = filters;
+const getAllFromDb = async (): Promise<Post[]> => {
 
-  const result = await prisma.event.findMany({
-    where: {
-      endDateTime: {
-        gte: new Date(),
-      },
-      category: category ? (category as causes) : undefined,
-      location: location
-        ? { contains: location, mode: 'insensitive' }
-        : undefined,
-      visibility: visibility ? visibility : undefined,
-    },
-    orderBy: {
-      date: 'asc',
-    },
-    include: {
-      createdBy: true,
-      participants: true,
-    },
+  const result = await prisma.post.findMany({
+    
   });
   return result;
 };
 
-const getById = async (id: string): Promise<Event | null> => {
-  const result = await prisma.event.findUnique({
+const getById = async (id: string): Promise<Post | null> => {
+  const result = await prisma.post.findUnique({
     where: {
       id,
     },
@@ -40,26 +19,26 @@ const getById = async (id: string): Promise<Event | null> => {
   return result;
 };
 
-const createEvent = async (payload: Event): Promise<Event> => {
-  const result = await prisma.event.create({
+const createPost = async (payload: Post): Promise<Post> => {
+  const result = await prisma.post.create({
     data: payload,
   });
   return result;
 };
 
-const registerEvent = async (payload: UserEvent): Promise<UserEvent> => {
-  const result = await prisma.userEvent.create({
-    data: payload,
-  });
-  console.log(result, 'this is register event');
-  return result;
-};
+// const registerPost = async (payload: UserPost): Promise<UserPost> => {
+//   const result = await prisma.userPost.create({
+//     data: payload,
+//   });
+//   console.log(result, 'this is register post');
+//   return result;
+// };
 
-const updateEvent = async (
+const updatePost = async (
   id: string,
-  payload: Partial<Event>,
-): Promise<Event> => {
-  const result = await prisma.event.update({
+  payload: Partial<Post>,
+): Promise<Post> => {
+  const result = await prisma.post.update({
     where: {
       id,
     },
@@ -68,8 +47,8 @@ const updateEvent = async (
   return result;
 };
 
-const deleteUsesr = async (id: string): Promise<Event> => {
-  const result = await prisma.event.delete({
+const deleteUsesr = async (id: string): Promise<Post> => {
+  const result = await prisma.post.delete({
     where: {
       id,
     },
@@ -77,11 +56,11 @@ const deleteUsesr = async (id: string): Promise<Event> => {
   return result;
 };
 
-export const eventService = {
+export const postService = {
   getAllFromDb,
   getById,
-  createEvent,
-  registerEvent,
-  updateEvent,
+  createPost,
+  // registerPost,
+  updatePost,
   deleteUsesr,
 };
