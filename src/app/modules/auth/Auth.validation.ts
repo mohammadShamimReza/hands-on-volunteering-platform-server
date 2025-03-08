@@ -1,5 +1,55 @@
 import { z } from 'zod';
 
+// ✅ Define ENUMS for skills and causes
+export const SkillsEnum = z.enum([
+  'Academic',
+  'Art',
+  'Business',
+  'Communication',
+  'Computer',
+  'Cooking',
+  'Craft',
+  'Creative',
+  'Design',
+  'Engineering',
+  'Finance',
+  'Health',
+  'Language',
+  'Leadership',
+  'Legal',
+  'Management',
+  'Marketing',
+  'Music',
+  'Photography',
+  'Programming',
+  'Science',
+  'Social',
+]);
+
+export const CausesEnum = z.enum([
+  'Animal',
+  'Arts',
+  'Children',
+  'Community',
+  'Crisis',
+  'Culture',
+  'Disability',
+  'Disaster',
+  'Education',
+  'Elderly',
+  'Employment',
+  'Environment',
+  'Health',
+  'Human',
+  'Humanitarian',
+  'International',
+  'Poverty',
+  'Rights',
+  'Social',
+  'Sports',
+  'Technology',
+]);
+
 export const create = z.object({
   body: z.object({
     fullName: z.string({
@@ -20,15 +70,19 @@ export const create = z.object({
       required_error: 'Role is required',
     }),
     profileImage: z.string().url('Invalid URL format').optional(),
-    skills: z.string({
-      required_error: 'Skills are required',
-    }),
-    causes: z.string({
-      required_error: 'Causes are required',
-    }),
+    skills: z
+      .array(SkillsEnum, {
+        required_error: 'At least one skill is required',
+      })
+      .min(1, 'At least one skill must be selected'),
+
+    causes: z
+      .array(CausesEnum, {
+        required_error: 'At least one cause is required',
+      })
+      .min(1, 'At least one cause must be selected'),
   }),
 });
-
 
 const login = z.object({
   body: z.object({
@@ -58,9 +112,3 @@ export const AuthValidation = {
   login,
   changePasswordZodSchema,
 };
-
-
-
-
-
-

@@ -16,8 +16,8 @@ model User {
   email          String   @unique
   password       String
   bio            String?  
-  skills         String
-  causes         String
+  skills         skills[]
+  causes         causes[]
   role           Role     @default(USER)
   profileImage   String?
   createdAt      DateTime @default(now())
@@ -34,13 +34,59 @@ model User {
   leaderboard   Leaderboard[]
 }
 
-
-
-
 enum Role {
   USER
   ADMIN
   ORG
+}
+
+enum skills {
+  Academic
+  Art
+  Business
+  Communication
+  Computer
+  Cooking
+  Craft
+  Creative
+  Design
+  Engineering
+  Finance
+  Health
+  Language
+  Leadership
+  Legal
+  Management
+  Marketing
+  Music
+  Photography
+  Programming
+  Science
+  Social
+}
+
+enum causes {
+  Animal
+  Arts
+  Children
+  Community
+  Crisis
+  Culture
+  Disability
+  Disaster
+  Education
+  Employment
+  Elderly
+  Environment
+  Health
+  Human
+  Humanitarian
+  International
+  Poverty
+  Rights
+  Social
+  Sports
+  Technology
 }
 
 model Event {

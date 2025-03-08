@@ -4,7 +4,7 @@ import { ENUM_USER_ROLE } from '../../../enums/user';
 import auth from '../../middleware/auth';
 import validateRequest from '../../middleware/validateRequest';
 import { StaffController } from './User.controller';
-import { StaffValidation } from './User.validation';
+import { UserValidation } from './User.validation';
 
 const router = express.Router();
 
@@ -13,8 +13,7 @@ router.get('/', StaffController.getAllFromDB);
 
 router.patch(
   '/:id',
-  // auth(ENUM_USER_ROLE.ADMIN),
-  validateRequest(StaffValidation.updateStaff),
+  validateRequest(UserValidation.updateUser),
   StaffController.updateUser,
 );
 

@@ -159,9 +159,9 @@ const forgotPass = async ({ email }: { email: string }) => {
 
   const resetLink: string = config.resetlink + `?token=${passResetToken}`;
 
-  console.log(resetLink, 'this is resetLink');
+  console.log(isUserExist.email, 'this is user mail');
 
-  await sendEmail(
+  const mailAnswer = await sendEmail(
     isUserExist.email,
     `
       <div>
@@ -172,9 +172,11 @@ const forgotPass = async ({ email }: { email: string }) => {
   `,
   );
 
-  return {
-    message: 'Check your email!',
-  };
+ console.log(mailAnswer, 'this is mailAnswer');
+
+ return {
+   message: mailAnswer,
+ };
 };
 
 const me = async (userData: JwtPayload) => {

@@ -1,29 +1,68 @@
 import { z } from 'zod';
 
-const createStaff = z.object({
-  body: z.object({
-    name: z.string({ required_error: 'Name is required' }),
-    email: z
-      .string({ required_error: 'Email is required' })
-      .email({ message: 'Invalid email format' }),
-    password: z.string({ required_error: 'Password is required' }),
-    address: z.string().optional(),
-    profile_image: z.string().url().optional(),
-    role: z.string({ required_error: 'Role is required' }),
-  }),
-});
+export const SkillsEnum = z.enum([
+  'Academic',
+  'Art',
+  'Business',
+  'Communication',
+  'Computer',
+  'Cooking',
+  'Craft',
+  'Creative',
+  'Design',
+  'Engineering',
+  'Finance',
+  'Health',
+  'Language',
+  'Leadership',
+  'Legal',
+  'Management',
+  'Marketing',
+  'Music',
+  'Photography',
+  'Programming',
+  'Science',
+  'Social',
+]);
 
-const updateStaff = z.object({
+export const CausesEnum = z.enum([
+  'Animal',
+  'Arts',
+  'Children',
+  'Community',
+  'Crisis',
+  'Culture',
+  'Disability',
+  'Disaster',
+  'Education',
+  'Elderly',
+  'Environment',
+  'Health',
+  'Human',
+  'Humanitarian',
+  'International',
+  'Poverty',
+  'Rights',
+  'Social',
+  'Sports',
+  'Technology',
+]);
+
+const updateUser = z.object({
   body: z.object({
-    name: z.string().optional(),
+    fullName: z.string().optional(),
     email: z.string().email({ message: 'Invalid email format' }).optional(),
-    password: z.string().optional(),
-    address: z.string().optional(),
-    role: z.string().optional(),
+
+    bio: z.string().optional(),
+    profileImage: z
+      .string()
+      .url({ message: 'Invalid profile image URL' })
+      .optional(),
+    skills: z.array(SkillsEnum).optional(),
+    causes: z.array(CausesEnum).optional(),
   }),
 });
 
-export const StaffValidation = {
-  createStaff,
-  updateStaff,
+export const UserValidation = {
+  updateUser,
 };
