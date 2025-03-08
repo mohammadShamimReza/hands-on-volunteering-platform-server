@@ -26,6 +26,17 @@ const getById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const createEvent = catchAsync(async (req: Request, res: Response) => {
+  const payload = req.body;
+  const result = await eventService.createEvent(payload); // createEvent is not defined
+  sendResponse(res, {
+    statusCode: StatusCodes.CREATED,
+    success: true,
+    message: 'Event created successfully',
+    data: result,
+  });
+});
+
 const updateEvent = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const payload = req.body;
@@ -46,15 +57,16 @@ const deleteEvent = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'Staff deleted successfully',
+    message: 'Event deleted successfully',
     data: result,
   });
 });
 
-export const StaffController = {
+export const EventController = {
 
   getAllFromDB,
   getById,
+  createEvent,
   updateEvent,
   deleteEvent,
 };

@@ -33,11 +33,7 @@ const createEvent = z.object({
     date: z.string({ required_error: 'Event date is required' }),
     time: z.string().optional(),
     location: z.string().optional(),
-    category: z
-          .array(CausesEnum, {
-            required_error: 'At least one cause is required',
-          })
-          .min(1, 'At least one cause must be selected'),
+    category: CausesEnum,
     visibility: VisibilityEnum.default('PUBLIC'), // Default to PUBLIC
     createdById: z.string({ required_error: 'CreatedById is required' }),
   }),

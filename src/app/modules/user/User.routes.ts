@@ -3,20 +3,20 @@ import express from 'express';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 import auth from '../../middleware/auth';
 import validateRequest from '../../middleware/validateRequest';
-import { StaffController } from './User.controller';
+import { UserController } from './User.controller';
 import { UserValidation } from './User.validation';
 
 const router = express.Router();
 
-router.get('/:id', StaffController.getById);
-router.get('/', StaffController.getAllFromDB);
+router.get('/:id', UserController.getById);
+router.get('/', UserController.getAllFromDB);
 
 router.patch(
   '/:id',
   validateRequest(UserValidation.updateUser),
-  StaffController.updateUser,
+  UserController.updateUser,
 );
 
-router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), StaffController.deleteUser);
+router.delete('/:id', auth(ENUM_USER_ROLE.ADMIN), UserController.deleteUser);
 
 export const UserRoutes = router;

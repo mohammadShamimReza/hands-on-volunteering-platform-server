@@ -16,6 +16,14 @@ const getById = async (id: string): Promise<Event | null> => {
   return result;
 };
 
+const createEvent = async (payload: Event): Promise<Event> => {
+  const result = await prisma.event.create({
+    data: payload,
+  });
+  console.log(result, 'this is event creation')
+  return result;
+};
+
 const updateEvent = async (
   id: string,
   payload: Partial<Event>,
@@ -41,6 +49,7 @@ const deleteUsesr = async (id: string): Promise<Event> => {
 export const eventService = {
   getAllFromDb,
   getById,
+  createEvent,
   updateEvent,
   deleteUsesr,
 };
