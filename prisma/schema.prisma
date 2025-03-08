@@ -222,7 +222,6 @@ model Contribution {
   user  User   @relation(fields: [userId], references: [id])
   event Event? @relation(fields: [eventId], references: [id])
 
-  @@unique([userId, eventId]) // Prevents duplicate entries for the same event
 
   validations Verification[]
 }
