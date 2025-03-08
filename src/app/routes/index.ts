@@ -4,6 +4,7 @@ import { CommentRoutes } from '../modules/comment/Comment.routes';
 import { EventRoutes } from '../modules/event/Event.routes';
 import { PostRoutes } from '../modules/post/Post.routes';
 import { UserRoutes } from '../modules/user/User.routes';
+import { TeamRoutes } from '../modules/team/Team.routes';
 
 const router = express.Router();
 
@@ -25,6 +26,10 @@ const moduleRoutes = [
   {
     path: '/comment',
     routes: CommentRoutes,
+  },
+  {
+    path: '/team',
+    routes: TeamRoutes,
   },
 ];
 

@@ -12,7 +12,7 @@ export const createPost = z.object({
     urgency: UrgencyEnum.default('MEDIUM'), // ✅ Uses the enum validation
     status: HelpStatusEnum.default('OPEN'), // ✅ Uses the enum validation
     createdById: z.string().optional(), // ✅ Optional, as either user or org creates it
-    createdByOrganizationId: z.string().optional(), // ✅ Optional, as either user or org creates it
+    createdByTeamId: z.string().optional(), // ✅ Optional, as either user or org creates it
   }),
 });
 
@@ -23,7 +23,7 @@ export const updatePost = z.object({
     urgency: UrgencyEnum.optional(),
     status: HelpStatusEnum.optional(),
     createdById: z.string().optional(),
-    createdByOrganizationId: z.string().optional(),
+    createdByTeamId: z.string().optional(),
   }),
 });
 

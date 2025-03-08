@@ -25,11 +25,11 @@ model User {
 
   eventsCreated Event[]
   eventsJoined  UserEvent[]
-  teams         OrganizationMember[]
+  teams         TeamMember[]
   contributions Contribution[]
-  helpRequests  Post[]
+  post  Post[]
   helpResponses Comment[]
-  teamsCreated  Organization[]
+  teamsCreated  Team[]
   leaderboard   Leaderboard[]
 }
 
@@ -142,12 +142,12 @@ model Post {
   urgency                 Urgency    @default(MEDIUM)
   status                  HelpStatus @default(OPEN)
   createdById             String?
-  createdByOrganizationId String?
+  createdByTeamId String?
   createdAt               DateTime   @default(now())
   updatedAt               DateTime   @updatedAt
 
   createdBy             User?         @relation(fields: [createdById], references: [id])
-  createdByOrganization Organization? @relation(fields: [createdByOrganizationId], references: [id])
+  createdByTeam Team? @relation(fields: [createdByTeamId], references: [id])
 
   responses Comment[]
 }
@@ -176,34 +176,34 @@ model Comment {
   user    User @relation(fields: [userId], references: [id])
 }
 
-model Organization {
+model Team {
   id           String           @id @default(uuid())
   name         String
   description  String?
-  type         OrganizationType @default(PUBLIC)
+  type         TeamType @default(PUBLIC)
   createdById  String
-  helpRequests Post[]
+  post Post[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   createdBy User                 @relation(fields: [createdById], references: [id])
-  members   OrganizationMember[]
+  members   TeamMember[]
 }
 
-enum OrganizationType {
+enum TeamType {
   PUBLIC
   PRIVATE
 }
 
-model OrganizationMember {
+model TeamMember {
   id       String   @id @default(uuid())
   userId   String
   teamId   String
   joinedAt DateTime @default(now())
 
   user User         @relation(fields: [userId], references: [id])
-  team Organization @relation(fields: [teamId], references: [id])
+  team Team @relation(fields: [teamId], references: [id])
 
   @@unique([userId, teamId]) // Ensures a user cannot join the same team multiple times
 }
