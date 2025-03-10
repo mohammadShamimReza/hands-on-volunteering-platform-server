@@ -16,8 +16,8 @@ model User {
   email        String   @unique
   password     String
   bio          String?
-  skills       skills[]
-  causes       causes[]
+   skills   skills[] @default([])
+  causes   causes[] @default([])
   role         Role     @default(USER)
   profileImage String?
   createdAt    DateTime @default(now())
