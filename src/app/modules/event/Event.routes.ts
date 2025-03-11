@@ -10,6 +10,12 @@ const router = express.Router();
 
 router.get('/:id', EventController.getById);
 router.get('/', EventController.getAllFromDB);
+router.get(
+  '/get-event-created-user/:id',
+  EventController.getAllEventCreateByUser,
+);
+
+
 router.get('/get-registered-event-by-user/:id', EventController.getAllRegisteredEventByUser);
 
 
