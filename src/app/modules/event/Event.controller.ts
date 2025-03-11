@@ -21,6 +21,21 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllRegisteredEventByUser = catchAsync(
+  async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+    const result = await eventService.getAllRegisteredEventByUser(id);
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'events fetched successfully',
+      data: result,
+    });
+  },
+);
+
+
 const getById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await eventService.getById(id);
@@ -81,6 +96,7 @@ const deleteEvent = catchAsync(async (req: Request, res: Response) => {
 export const EventController = {
 
   getAllFromDB,
+  getAllRegisteredEventByUser,
   getById,
   createEvent,
   registerEvent,
