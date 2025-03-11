@@ -189,6 +189,17 @@ const me = async (userData: JwtPayload) => {
       role,
       id,
     },
+    include: {
+      eventsCreated: true,
+      eventsJoined: true,
+      teams: true,
+      contributions: true,
+      post: true,
+      helpResponses: true,
+      teamsCreated: true,
+      leaderboard: true,
+      certificates: true
+    }
   });
 
   if (!isUserExistWithPassword) {

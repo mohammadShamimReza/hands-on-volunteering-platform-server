@@ -9,7 +9,10 @@ const app: Application = express();
 
 // CORS configuration
 app.use(
-  cors(),
+  cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  }),
 );
 
 // Parser
