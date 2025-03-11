@@ -46,6 +46,21 @@ const getAllRegisteredEventByUser = async (
   return result.map(userEvent => userEvent.event); // Extract the event details
 };
 
+const getAllEventCreateByUser  = async (
+  userId: string,
+): Promise<Event[]> => {
+  const result = await prisma.event.findMany({
+    where: {
+      createdById: userId, // Find where user is a participant
+    },
+    
+  });
+
+  console.log(result)
+
+  return result; // Extract the event details
+};
+
 
 const getById = async (id: string): Promise<Event | null> => {
   const result = await prisma.event.findUnique({
@@ -96,6 +111,7 @@ const deleteUsesr = async (id: string): Promise<Event> => {
 export const eventService = {
   getAllFromDb,
   getAllRegisteredEventByUser,
+  getAllEventCreateByUser,
   getById,
   createEvent,
   registerEvent,

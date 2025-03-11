@@ -35,6 +35,20 @@ const getAllRegisteredEventByUser = catchAsync(
   },
 );
 
+const getAllEventCreateByUser = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const result = await eventService.getAllEventCreateByUser(id);
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'events fetched successfully',
+      data: result,
+    });
+  },
+);
+
 
 const getById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -50,6 +64,7 @@ const getById = catchAsync(async (req: Request, res: Response) => {
 const createEvent = catchAsync(async (req: Request, res: Response) => {
   const payload = req.body;
   const result = await eventService.createEvent(payload); // createEvent is not defined
+  console.log(result)
   sendResponse(res, {
     statusCode: StatusCodes.CREATED,
     success: true,
@@ -97,6 +112,7 @@ export const EventController = {
 
   getAllFromDB,
   getAllRegisteredEventByUser,
+  getAllEventCreateByUser,
   getById,
   createEvent,
   registerEvent,
