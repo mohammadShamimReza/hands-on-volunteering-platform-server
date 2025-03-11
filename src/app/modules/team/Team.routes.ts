@@ -10,6 +10,8 @@ const router = express.Router();
 
 router.get('/:id', TeamController.getById);
 router.get('/', TeamController.getAllFromDB);
+router.get('/get-all-joined-team-by-user/:id', TeamController.getAllJoinedTeamByUser);
+
 
 router.post(
   '/create',

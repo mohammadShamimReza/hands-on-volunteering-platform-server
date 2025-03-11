@@ -17,6 +17,20 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllJoinedTeamByUser = catchAsync(
+  async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+    const result = await teamService.getAllJoinedTeamByUser(id);
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: 'teams fetched successfully',
+      data: result,
+    });
+  },
+);
+
 const getById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await teamService.getById(id);
@@ -78,6 +92,7 @@ const deleteTeam = catchAsync(async (req: Request, res: Response) => {
 export const TeamController = {
 
   getAllFromDB,
+  getAllJoinedTeamByUser,
   getById,
   createTeam,
   registerTeam,

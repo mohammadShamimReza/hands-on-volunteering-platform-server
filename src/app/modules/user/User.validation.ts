@@ -56,7 +56,6 @@ const updateUser = z.object({
     bio: z.string().optional(),
     profileImage: z
       .string()
-      .url({ message: 'Invalid profile image URL' })
       .optional(),
     skills: z.array(SkillsEnum).optional(),
     causes: z.array(CausesEnum).optional(),
