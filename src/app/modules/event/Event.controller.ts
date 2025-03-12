@@ -6,12 +6,12 @@ import sendResponse from '../../../shared/sendResponse';
 import { eventService } from './Event.service';
 
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-      const { category, location, visibility } = req.query;
+  const { category, location } = req.query;
+  console.log(category, location)
 
   const result = await eventService.getAllFromDb({
     category: category as string,
     location: location as string,
-    visibility: visibility as 'PUBLIC' | 'PRIVATE',
   });
   sendResponse(res, {
     statusCode: StatusCodes.OK,
