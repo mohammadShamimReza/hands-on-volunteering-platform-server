@@ -31,6 +31,16 @@ const getById = async (id: string): Promise<Team | null> => {
   return result;
 };
 
+
+const getByUserId = async (id: string): Promise<Team[] | null> => {
+  const result = await prisma.team.findMany({
+    where: {
+      createdById: id
+    },
+  });
+  return result;
+};
+
 const createTeam = async (payload: Team): Promise<Team> => {
   const result = await prisma.team.create({
     data: payload,
@@ -71,6 +81,7 @@ const deleteUsesr = async (id: string): Promise<Team> => {
 export const teamService = {
   getAllFromDb,
   getById,
+  getByUserId,
   getAllJoinedTeamByUser,
   createTeam,
   registerTeam,

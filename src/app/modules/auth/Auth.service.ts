@@ -195,11 +195,11 @@ const me = async (userData: JwtPayload) => {
       teams: true,
       contributions: true,
       post: true,
-      helpResponses: true,
+      comments: true,
       teamsCreated: true,
       leaderboard: true,
-      certificates: true
-    }
+      certificates: true,
+    },
   });
 
   if (!isUserExistWithPassword) {

@@ -42,6 +42,17 @@ const getById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getByUserId = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await teamService.getByUserId(id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Team fetched successfully',
+    data: result,
+  });
+});
+
 const createTeam = catchAsync(async (req: Request, res: Response) => {
   const payload = req.body;
   const result = await teamService.createTeam(payload); // createTeam is not defined
@@ -92,6 +103,7 @@ const deleteTeam = catchAsync(async (req: Request, res: Response) => {
 export const TeamController = {
 
   getAllFromDB,
+  getByUserId,
   getAllJoinedTeamByUser,
   getById,
   createTeam,
