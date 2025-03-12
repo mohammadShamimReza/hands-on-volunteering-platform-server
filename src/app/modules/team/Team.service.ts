@@ -5,7 +5,13 @@ const prisma = new PrismaClient();
 const getAllFromDb = async (): Promise<Team[]> => {
 
   const result = await prisma.team.findMany({
-    
+    include: {
+      members: {
+        include: {
+          user: true
+        }
+      }
+    }
   });
   return result;
 };
