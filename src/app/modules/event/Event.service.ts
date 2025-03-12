@@ -5,29 +5,32 @@ const prisma = new PrismaClient();
 const getAllFromDb = async (filters: {
   category?: string;
   location?: string;
-  visibility?: 'PUBLIC' | 'PRIVATE';
 }): Promise<Event[]> => {
-  const { category, location, visibility } = filters;
+  const { category, location } = filters;
 
   const result = await prisma.event.findMany({
     where: {
-      endDateTime: {
-        gte: new Date(),
-      },
-      category: category ? (category as causes) : undefined,
-      location: location
-        ? { contains: location, mode: 'insensitive' }
-        : undefined,
-      visibility: visibility ? visibility : undefined,
+      AND: [
+        {
+          endDateTime: {
+            gte: new Date(), // ✅ Ensures we only fetch upcoming events
+          },
+        },
+        category ? { category: category as causes } : {},
+        location
+          ? { location: { contains: location, mode: 'insensitive' } }
+          : {},
+      ],
     },
     orderBy: {
-      date: 'asc',
+      endDateTime: 'asc', // ✅ Sort events by soonest end date
     },
     include: {
-      createdBy: true,
-      participants: true,
+      createdBy: true, // ✅ Include creator details
+      participants: true, // ✅ Include participants
     },
   });
+
   return result;
 };
 
@@ -67,6 +70,13 @@ const getById = async (id: string): Promise<Event | null> => {
     where: {
       id,
     },
+    include: {
+      participants: {
+        include: {
+          user: true
+        }
+      }
+    }
   });
   return result;
 };
