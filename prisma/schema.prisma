@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -16,8 +17,8 @@ model User {
   email        String   @unique
   password     String
   bio          String?
-   skills   skills[] @default([])
-  causes   causes[] @default([])
+  skills       skills[] @default([])
+  causes       causes[] @default([])
   role         Role     @default(USER)
   profileImage String?
   createdAt    DateTime @default(now())
@@ -27,7 +28,7 @@ model User {
   eventsJoined  UserEvent[]
   teams         TeamMember[]
   contributions Contribution[]
-  post  Post[]
+  post          Post[]
   helpResponses Comment[]
   teamsCreated  Team[]
   leaderboard   Leaderboard[]
@@ -137,17 +138,17 @@ enum EventStatus {
 }
 
 model Post {
-  id                      String     @id @default(uuid())
-  title                   String
-  description             String?
-  urgency                 Urgency    @default(MEDIUM)
-  status                  HelpStatus @default(OPEN)
-  createdById             String?
+  id              String     @id @default(uuid())
+  title           String
+  description     String?
+  urgency         Urgency    @default(MEDIUM)
+  status          HelpStatus @default(OPEN)
+  createdById     String?
   createdByTeamId String?
-  createdAt               DateTime   @default(now())
-  updatedAt               DateTime   @updatedAt
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
 
-  createdBy             User?         @relation(fields: [createdById], references: [id])
+  createdBy     User? @relation(fields: [createdById], references: [id])
   createdByTeam Team? @relation(fields: [createdByTeamId], references: [id])
 
   responses Comment[]
@@ -168,27 +169,27 @@ enum HelpStatus {
 model Comment {
   id        String   @id @default(uuid())
   userId    String
-  postId String
+  postId    String
   message   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   post Post @relation(fields: [postId], references: [id])
-  user    User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
 }
 
 model Team {
-  id           String           @id @default(uuid())
-  name         String
-  description  String?
-  type         TeamType @default(PUBLIC)
-  createdById  String
-  post Post[]
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  type        TeamType @default(PUBLIC)
+  createdById String
+  post        Post[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  createdBy User                 @relation(fields: [createdById], references: [id])
+  createdBy User         @relation(fields: [createdById], references: [id])
   members   TeamMember[]
 }
 
@@ -203,36 +204,34 @@ model TeamMember {
   teamId   String
   joinedAt DateTime @default(now())
 
-  user User         @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id])
   team Team @relation(fields: [teamId], references: [id])
 
   @@unique([userId, teamId]) // Ensures a user cannot join the same team multiple times
 }
 
 model Contribution {
-  id         String   @id @default(uuid())
-  userId     String
-  eventId    String?
-  hours      Int?      @default(0)
-  points     Int?     @default(0)
-  verified   Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @default(uuid())
+  userId    String
+  eventId   String?
+  hours     Int?     @default(0)
+  points    Int?     @default(0)
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user  User   @relation(fields: [userId], references: [id])
   event Event? @relation(fields: [eventId], references: [id])
 
-
   validations Verification[]
 }
 
-
 model Verification {
-  id            String   @id @default(uuid())
+  id             String             @id @default(uuid())
   contributionId String
-  verifierId    String
-  status        VerificationStatus @default(PENDING)
-  createdAt     DateTime @default(now())
+  verifierId     String
+  status         VerificationStatus @default(PENDING)
+  createdAt      DateTime           @default(now())
 
   contribution Contribution @relation(fields: [contributionId], references: [id])
 }
@@ -242,8 +241,6 @@ enum VerificationStatus {
   APPROVED
   REJECTED
 }
-
-
 
 model Leaderboard {
   id        String   @id @default(uuid())
@@ -257,12 +254,11 @@ model Leaderboard {
   user User @relation(fields: [userId], references: [id])
 }
 
-
 model Certificate {
-  id         String   @id @default(uuid())
-  userId     String
-  level      CertificateLevel
-  issuedAt   DateTime @default(now())
+  id       String           @id @default(uuid())
+  userId   String
+  level    CertificateLevel
+  issuedAt DateTime         @default(now())
 
   user User @relation(fields: [userId], references: [id])
 }
