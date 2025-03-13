@@ -33,6 +33,13 @@ const getById = async (id: string): Promise<Team | null> => {
     where: {
       id,
     },
+    include: {
+      members: {
+        include: {
+          user: true
+        }
+      }
+    }
   });
   return result;
 };
