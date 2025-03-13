@@ -39,6 +39,17 @@ const getPostByUserId = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getPostByTeamId = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await postService.getPostByTeamId(id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Post fetched successfully',
+    data: result,
+  });
+});
+
 const createPost = catchAsync(async (req: Request, res: Response) => {
   const payload = req.body;
   const result = await postService.createPost(payload); // createPost is not defined
@@ -76,7 +87,7 @@ const updatePost = catchAsync(async (req: Request, res: Response) => {
 
 const deletePost = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
-  const result = await postService.deleteUsesr(id);
+  const result = await postService.deletePost(id);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -87,12 +98,12 @@ const deletePost = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const PostController = {
-
   getAllFromDB,
   getById,
   createPost,
   getPostByUserId,
   // registerPost,
+  getPostByTeamId,
   updatePost,
   deletePost,
 };

@@ -1,7 +1,6 @@
 import express from 'express';
 
 
-import auth from '../../middleware/auth';
 import validateRequest from '../../middleware/validateRequest';
 import { PostController } from './Post.controller';
 import { PostValidation } from './Post.validation';
@@ -9,8 +8,9 @@ import { PostValidation } from './Post.validation';
 const router = express.Router();
 
 router.get('/:id', PostController.getById);
-router.get('/:id', PostController.getById);
 router.get('/user/:id', PostController.getPostByUserId);
+router.get('/team/:id', PostController.getPostByTeamId);
+
 
 router.get('/', PostController.getAllFromDB);
 

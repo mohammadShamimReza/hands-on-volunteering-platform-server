@@ -1,11 +1,16 @@
-import { Post, PrismaClient,  causes } from '@prisma/client';
+import { Post, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 const getAllFromDb = async (): Promise<Post[]> => {
-
   const result = await prisma.post.findMany({
-    
+    include: {
+      comments: {
+        include: {
+          user: true,
+        },
+      },
+    },
   });
   return result;
 };
@@ -22,7 +27,16 @@ const getById = async (id: string): Promise<Post | null> => {
 const getPostByUserId = async (id: string) => {
   const result = await prisma.post.findMany({
     where: {
-      createdById: id
+      createdById: id,
+    },
+  });
+  return result;
+};
+
+const getPostByTeamId = async (id: string) => {
+  const result = await prisma.post.findMany({
+    where: {
+      createdByTeamId: id,
     },
   });
   return result;
@@ -56,7 +70,8 @@ const updatePost = async (
   return result;
 };
 
-const deleteUsesr = async (id: string): Promise<Post> => {
+const deletePost = async (id: string): Promise<Post> => {
+  console.log(id, 'this is id');
   const result = await prisma.post.delete({
     where: {
       id,
@@ -71,6 +86,7 @@ export const postService = {
   createPost,
   getPostByUserId,
   // registerPost,
+  getPostByTeamId,
   updatePost,
-  deleteUsesr,
+  deletePost,
 };
