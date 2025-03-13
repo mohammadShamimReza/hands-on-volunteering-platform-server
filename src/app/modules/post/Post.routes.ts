@@ -9,6 +9,9 @@ import { PostValidation } from './Post.validation';
 const router = express.Router();
 
 router.get('/:id', PostController.getById);
+router.get('/:id', PostController.getById);
+router.get('/user/:id', PostController.getPostByUserId);
+
 router.get('/', PostController.getAllFromDB);
 
 router.post(

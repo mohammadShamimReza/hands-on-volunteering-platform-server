@@ -19,6 +19,15 @@ const getById = async (id: string): Promise<Post | null> => {
   return result;
 };
 
+const getPostByUserId = async (id: string) => {
+  const result = await prisma.post.findMany({
+    where: {
+      createdById: id
+    },
+  });
+  return result;
+};
+
 const createPost = async (payload: Post): Promise<Post> => {
   const result = await prisma.post.create({
     data: payload,
@@ -60,6 +69,7 @@ export const postService = {
   getAllFromDb,
   getById,
   createPost,
+  getPostByUserId,
   // registerPost,
   updatePost,
   deleteUsesr,
