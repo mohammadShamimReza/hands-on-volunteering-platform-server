@@ -1,17 +1,17 @@
-import { Team, PrismaClient,  causes, TeamMember } from '@prisma/client';
+import { PrismaClient, Team, TeamMember } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 const getAllFromDb = async (): Promise<Team[]> => {
-
   const result = await prisma.team.findMany({
     include: {
       members: {
         include: {
-          user: true
-        }
-      }
-    }
+          user: true,
+        },
+      },
+      post: true,
+    },
   });
   return result;
 };
@@ -19,13 +19,13 @@ const getAllFromDb = async (): Promise<Team[]> => {
 const getAllJoinedTeamByUser = async (id: string): Promise<Team[]> => {
   const result = await prisma.teamMember.findMany({
     where: {
-    userId: id
+      userId: id,
     },
     include: {
-      team: true
-    }
+      team: true,
+    },
   });
-  return result.map((teamJoined) => teamJoined.team);
+  return result.map(teamJoined => teamJoined.team);
 };
 
 const getById = async (id: string): Promise<Team | null> => {
@@ -36,19 +36,18 @@ const getById = async (id: string): Promise<Team | null> => {
     include: {
       members: {
         include: {
-          user: true
-        }
-      }
-    }
+          user: true,
+        },
+      },
+    },
   });
   return result;
 };
 
-
 const getByUserId = async (id: string): Promise<Team[] | null> => {
   const result = await prisma.team.findMany({
     where: {
-      createdById: id
+      createdById: id,
     },
   });
   return result;
@@ -61,7 +60,7 @@ const getEventsByTeamId = async (id: string) => {
     },
   });
 
-  console.log(result)
+  console.log(result);
   return result;
 };
 
