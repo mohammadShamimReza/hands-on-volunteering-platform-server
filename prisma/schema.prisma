@@ -101,15 +101,15 @@ model Event {
   category        causes
   endDateTime     DateTime
   requiredMembers Int
-  createdById     String
-    createdByTeamId String?
+  createdById     String?
+  createdByTeamId String?
 
   visibility      Visibility @default(PUBLIC)
   createdAt       DateTime   @default(now())
   updatedAt       DateTime   @updatedAt
   // Relationships
-  createdBy       User       @relation(fields: [createdById], references: [id])
-  createdByTeam   Team?      @relation(fields: [createdByTeamId], references: [id])
+  createdBy       User?       @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdByTeam   Team?      @relation(fields: [createdByTeamId], references: [id], onDelete: SetNull)
 
   participants  UserEvent[]
   contributions Contribution[]

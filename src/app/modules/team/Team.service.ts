@@ -54,6 +54,17 @@ const getByUserId = async (id: string): Promise<Team[] | null> => {
   return result;
 };
 
+const getEventsByTeamId = async (id: string) => {
+  const result = await prisma.event.findMany({
+    where: {
+      createdByTeamId: id,
+    },
+  });
+
+  console.log(result)
+  return result;
+};
+
 const createTeam = async (payload: Team): Promise<Team> => {
   const result = await prisma.team.create({
     data: payload,
@@ -94,6 +105,7 @@ const deleteUsesr = async (id: string): Promise<Team> => {
 export const teamService = {
   getAllFromDb,
   getById,
+  getEventsByTeamId,
   getByUserId,
   getAllJoinedTeamByUser,
   createTeam,

@@ -82,6 +82,9 @@ const getById = async (id: string): Promise<Event | null> => {
 };
 
 const createEvent = async (payload: Event): Promise<Event> => {
+
+  
+
   const result = await prisma.event.create({
     data: payload,
   });

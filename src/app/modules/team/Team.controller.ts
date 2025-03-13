@@ -53,6 +53,17 @@ const getByUserId = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getEventsByTeamId = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await teamService.getEventsByTeamId(id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Team fetched successfully',
+    data: result,
+  });
+});
+
 const createTeam = catchAsync(async (req: Request, res: Response) => {
   const payload = req.body;
   const result = await teamService.createTeam(payload); // createTeam is not defined
@@ -104,6 +115,7 @@ export const TeamController = {
 
   getAllFromDB,
   getByUserId,
+  getEventsByTeamId,
   getAllJoinedTeamByUser,
   getById,
   createTeam,

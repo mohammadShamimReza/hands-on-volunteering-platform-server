@@ -36,9 +36,16 @@ const createEvent = z.object({
     location: z.string({ required_error: 'Event location is required' }),
     category: CausesEnum,
     endDateTime: z.string({ required_error: 'Event date is required' }),
-    requiredMembers: z.number({ required_error: 'Required members is required' }),
+    requiredMembers: z.number({
+      required_error: 'Required members is required',
+    }),
     visibility: VisibilityEnum.default('PUBLIC'), // Default to PUBLIC
-    createdById: z.string({ required_error: 'CreatedById is required' }),
+    createdById: z
+      .string({ required_error: 'CreatedById is required' })
+      .optional(),
+    createdByTeamId: z
+      .string({ required_error: 'CreatedByTeamId is required' })
+      .optional(),
   }),
 });
 

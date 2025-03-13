@@ -10,6 +10,8 @@ const router = express.Router();
 
 router.get('/:id', TeamController.getById);
 router.get('/user/:id', TeamController.getByUserId);
+router.get('/events/:id', TeamController.getEventsByTeamId);
+
 
 router.get('/', TeamController.getAllFromDB);
 router.get('/get-all-joined-team-by-user/:id', TeamController.getAllJoinedTeamByUser);
