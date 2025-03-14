@@ -20,7 +20,7 @@ model User {
   skills       skills[] @default([])
   causes       causes[] @default([])
   role         Role     @default(USER)
-  profileImage String?
+  profileImage String?  @default("/default-avater.png")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 

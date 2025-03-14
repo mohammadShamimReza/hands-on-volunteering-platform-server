@@ -12,7 +12,6 @@ const getLogHours = async ({
   userId: string;
   eventId: string;
 }) => {
-  console.log(userId, eventId, 'this is get log hours');
   const result = await prisma.userEvent.findUnique({
     where: {
       userId_eventId: {
@@ -38,6 +37,8 @@ const getLogHours = async ({
     },
   });
 
+  console.log(result);
+
   if (!result) {
     return new ApiError(StatusCodes.NOT_FOUND, 'User event not found');
   }
@@ -55,11 +56,13 @@ const getLogHours = async ({
     new Date(joinedAt),
   );
 
+  console.log(result);
+
   return {
     joinedAt,
     endDateTime: event?.endDateTime,
     hoursVolunteered,
-    user: result.user,
+    user: result,
   };
 };
 
