@@ -1,12 +1,9 @@
-import { Comment, PrismaClient,  causes } from '@prisma/client';
+import { Comment, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 const getAllFromDb = async (): Promise<Comment[]> => {
-
-  const result = await prisma.comment.findMany({
-    
-  });
+  const result = await prisma.comment.findMany({});
   return result;
 };
 

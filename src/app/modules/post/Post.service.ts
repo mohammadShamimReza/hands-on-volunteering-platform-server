@@ -20,6 +20,13 @@ const getById = async (id: string): Promise<Post | null> => {
     where: {
       id,
     },
+    include: {
+      comments: {
+        include: {
+          user: true,
+        },
+      },
+    },
   });
   return result;
 };

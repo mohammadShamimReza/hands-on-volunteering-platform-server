@@ -17,6 +17,8 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+
+
 const getById = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await commentService.getById(id);
@@ -76,7 +78,6 @@ const deleteComment = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const CommentController = {
-
   getAllFromDB,
   getById,
   createComment,
