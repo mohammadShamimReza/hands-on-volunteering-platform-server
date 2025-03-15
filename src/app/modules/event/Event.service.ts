@@ -5,17 +5,20 @@ const prisma = new PrismaClient();
 const getAllFromDb = async (filters: {
   category?: string;
   location?: string;
+  available?: boolean;
 }): Promise<Event[]> => {
-  const { category, location } = filters;
+  const { category, location, available } = filters;
 
   const result = await prisma.event.findMany({
     where: {
       AND: [
-        {
-          endDateTime: {
-            gte: new Date(), // ✅ Ensures we only fetch upcoming events
-          },
-        },
+        available
+          ? {
+              endDateTime: {
+                gte: new Date(), // ✅ Only upcoming events if available is true
+              },
+            }
+          : {},
         category ? { category: category as causes } : {},
         location
           ? { location: { contains: location, mode: 'insensitive' } }

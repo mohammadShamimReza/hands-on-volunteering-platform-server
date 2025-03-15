@@ -6,12 +6,14 @@ import sendResponse from '../../../shared/sendResponse';
 import { eventService } from './Event.service';
 
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
-  const { category, location } = req.query;
-  console.log(category, location)
+  const { category, location, available } = req.query;
+  console.log(category, location, available, 'hit sis with availablit');
 
   const result = await eventService.getAllFromDb({
     category: category as string,
     location: location as string,
+    available:
+      available === 'true' ? true : available === 'false' ? false : undefined, // ✅ Convert string to boolean
   });
   sendResponse(res, {
     statusCode: StatusCodes.OK,
