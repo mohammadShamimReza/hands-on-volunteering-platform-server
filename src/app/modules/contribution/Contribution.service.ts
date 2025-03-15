@@ -66,6 +66,50 @@ const getLogHours = async ({
   };
 };
 
+
+const getUserStats = async ({ userId }: { userId: string }) => {
+  const userEvents = await prisma.userEvent.findMany({
+    where: { userId },
+    include: {
+      event: {
+        select: {
+          endDateTime: true,
+        },
+      },
+    },
+  });
+
+  if (!userEvents.length) {
+    return {
+      totalHours: 0,
+      totalPoints: 0,
+      message: 'No events found for this user',
+    };
+  }
+
+  let totalHours = 0;
+
+  userEvents.forEach(({ joinedAt, event }) => {
+    const now = new Date();
+
+    // ✅ Determine correct end time for calculation
+    const calculationEndTime =
+      event?.endDateTime && event.endDateTime < now ? event.endDateTime : now;
+
+    // ✅ Calculate hours volunteered
+    const hoursVolunteered = differenceInHours(
+      calculationEndTime,
+      new Date(joinedAt),
+    );
+
+    totalHours += hoursVolunteered;
+  });
+
+  const totalPoints = totalHours * 5; // ✅ 5 points per hour
+
+  return { userId, totalHours, totalPoints };
+};
+
 const getLearderboard = async () => {
   const userEvents = await prisma.userEvent.findMany({
     include: {
@@ -128,7 +172,6 @@ const getLearderboard = async () => {
   return leaderboard;
 };
 
-
 const createContribution = async (
   payload: Contribution,
 ): Promise<Contribution> => {
@@ -172,6 +215,7 @@ export const contributionService = {
   getLogHours,
   getLearderboard,
   createContribution,
+  getUserStats,
   // registerContribution,
   updateContribution,
   deleteUsesr,

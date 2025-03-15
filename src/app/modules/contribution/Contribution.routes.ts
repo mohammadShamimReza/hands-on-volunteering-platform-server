@@ -1,7 +1,6 @@
 import express from 'express';
 
 
-import auth from '../../middleware/auth';
 import validateRequest from '../../middleware/validateRequest';
 import { ContributionController } from './Contribution.controller';
 import { ContributionValidation } from './Contribution.validation';
@@ -11,6 +10,7 @@ const router = express.Router();
 router.get('/log-hours', ContributionController.getLogHours);
 router.get('/leaderboard', ContributionController.getLearderboard);
 
+router.get('/UserHour/:id', ContributionController.getLearderboard);
 router.post(
   '/create',
   validateRequest(ContributionValidation.createContribution),

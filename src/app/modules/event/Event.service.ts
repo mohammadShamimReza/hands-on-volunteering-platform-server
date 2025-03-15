@@ -56,7 +56,10 @@ const getAllEventCreateByUser  = async (
     where: {
       createdById: userId, // Find where user is a participant
     },
-    
+
+    include: {
+      participants: true,
+    },
   });
 
   console.log(result)

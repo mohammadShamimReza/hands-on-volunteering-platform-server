@@ -18,6 +18,18 @@ const getLogHours = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getUserStats = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  const result = await contributionService.getUserStats({ userId: id });
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'User Star fetched successfully',
+    data: result,
+  });
+});
+
 const getLearderboard = catchAsync(async (req: Request, res: Response) => {
   const result = await contributionService.getLearderboard();
   sendResponse(res, {
@@ -78,6 +90,7 @@ const deleteContribution = catchAsync(async (req: Request, res: Response) => {
 export const ContributionController = {
   getLogHours,
   getLearderboard,
+  getUserStats,
   createContribution,
   // registerContribution,
   updateContribution,
