@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TeamRoutes = void 0;
+const express_1 = __importDefault(require("express"));
+const validateRequest_1 = __importDefault(require("../../middleware/validateRequest"));
+const Team_controller_1 = require("./Team.controller");
+const Team_validation_1 = require("./Team.validation");
+const router = express_1.default.Router();
+router.get('/:id', Team_controller_1.TeamController.getById);
+router.get('/user/:id', Team_controller_1.TeamController.getByUserId);
+router.get('/events/:id', Team_controller_1.TeamController.getEventsByTeamId);
+router.get('/', Team_controller_1.TeamController.getAllFromDB);
+router.get('/get-all-joined-team-by-user/:id', Team_controller_1.TeamController.getAllJoinedTeamByUser);
+router.post('/create', (0, validateRequest_1.default)(Team_validation_1.TeamValidation.createTeam), Team_controller_1.TeamController.createTeam);
+router.post('/register-team', (0, validateRequest_1.default)(Team_validation_1.TeamValidation.registerTeam), Team_controller_1.TeamController.registerTeam);
+router.patch('/:id', (0, validateRequest_1.default)(Team_validation_1.TeamValidation.updateTeam), Team_controller_1.TeamController.updateTeam);
+router.delete('/:id', Team_controller_1.TeamController.deleteTeam);
+exports.TeamRoutes = router;

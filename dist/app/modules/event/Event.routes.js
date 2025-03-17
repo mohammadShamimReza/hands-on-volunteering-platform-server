@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.EventRoutes = void 0;
+const express_1 = __importDefault(require("express"));
+const validateRequest_1 = __importDefault(require("../../middleware/validateRequest"));
+const Event_controller_1 = require("./Event.controller");
+const Event_validation_1 = require("./Event.validation");
+const router = express_1.default.Router();
+router.get('/:id', Event_controller_1.EventController.getById);
+router.get('/', Event_controller_1.EventController.getAllFromDB);
+router.get('/get-event-created-user/:id', Event_controller_1.EventController.getAllEventCreateByUser);
+router.get('/get-registered-event-by-user/:id', Event_controller_1.EventController.getAllRegisteredEventByUser);
+router.post('/create', (0, validateRequest_1.default)(Event_validation_1.EventValidation.createEvent), Event_controller_1.EventController.createEvent);
+router.post('/register-event', (0, validateRequest_1.default)(Event_validation_1.EventValidation.registerEvent), Event_controller_1.EventController.registerEvent);
+router.patch('/:id', (0, validateRequest_1.default)(Event_validation_1.EventValidation.updateEvent), Event_controller_1.EventController.updateEvent);
+router.delete('/:id', Event_controller_1.EventController.deleteEvent);
+exports.EventRoutes = router;
