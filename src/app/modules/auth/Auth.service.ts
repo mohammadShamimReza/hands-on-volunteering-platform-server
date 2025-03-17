@@ -134,7 +134,6 @@ const changePassword = async (
 
 
 const forgotPass = async ({ email }: { email: string }) => {
-  console.log(email, 'this is email');
   let isUserExist;
 
   isUserExist = await prisma.user.findFirst({
@@ -142,8 +141,6 @@ const forgotPass = async ({ email }: { email: string }) => {
       email,
     },
   });
-
-  console.log(isUserExist, 'this is user');
 
   if (!isUserExist) {
     throw new ApiError(500, 'User does not exist!');
@@ -154,8 +151,6 @@ const forgotPass = async ({ email }: { email: string }) => {
     config.jwt.secret as string,
     '50m',
   );
-
-  console.log(passResetToken, 'this is passResetToken');
 
   const resetLink: string = config.resetlink + `?token=${passResetToken}`;
 
@@ -172,11 +167,11 @@ const forgotPass = async ({ email }: { email: string }) => {
   `,
   );
 
- console.log(mailAnswer, 'this is mailAnswer');
+  console.log(mailAnswer, 'this is mailAnswer');
 
- return {
-   message: mailAnswer,
- };
+  return {
+    message: mailAnswer,
+  };
 };
 
 const me = async (userData: JwtPayload) => {
