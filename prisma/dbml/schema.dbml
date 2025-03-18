@@ -1,0 +1,285 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table User {
+  id String [pk]
+  fullName String [not null]
+  email String [unique, not null]
+  password String [not null]
+  bio String
+  skills skills[] [not null]
+  causes causes[] [not null]
+  role Role [not null, default: 'USER']
+  profileImage String [default: '/default-avater.png']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  eventsCreated Event [not null]
+  eventsJoined UserEvent [not null]
+  teams TeamMember [not null]
+  contributions Contribution [not null]
+  post Post [not null]
+  comments Comment [not null]
+  teamsCreated Team [not null]
+  leaderboard Leaderboard [not null]
+  certificates Certificate [not null]
+}
+
+Table Event {
+  id String [pk]
+  title String [not null]
+  description String
+  date DateTime [not null]
+  time String
+  location String
+  category causes [not null]
+  endDateTime DateTime [not null]
+  requiredMembers Int [not null]
+  createdById String
+  createdByTeamId String
+  visibility Visibility [not null, default: 'PUBLIC']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  createdBy User
+  createdByTeam Team
+  participants UserEvent [not null]
+  contributions Contribution [not null]
+}
+
+Table UserEvent {
+  id String [pk]
+  userId String [not null]
+  eventId String [not null]
+  status EventStatus [not null, default: 'JOINED']
+  joinedAt DateTime [default: `now()`, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  user User [not null]
+  event Event [not null]
+
+  indexes {
+    (userId, eventId) [unique]
+  }
+}
+
+Table Post {
+  id String [pk]
+  title String [not null]
+  description String
+  urgency Urgency [not null, default: 'MEDIUM']
+  status HelpStatus [not null, default: 'OPEN']
+  createdById String
+  createdByTeamId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  createdBy User
+  createdByTeam Team
+  comments Comment [not null]
+}
+
+Table Comment {
+  id String [pk]
+  userId String [not null]
+  postId String [not null]
+  message String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  post Post [not null]
+  user User [not null]
+}
+
+Table Team {
+  id String [pk]
+  name String [not null]
+  description String
+  type TeamType [not null, default: 'PUBLIC']
+  createdById String [not null]
+  events Event [not null]
+  post Post [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  createdBy User [not null]
+  members TeamMember [not null]
+}
+
+Table TeamMember {
+  id String [pk]
+  userId String [not null]
+  teamId String [not null]
+  joinedAt DateTime [default: `now()`, not null]
+  user User [not null]
+  team Team [not null]
+
+  indexes {
+    (userId, teamId) [unique]
+  }
+}
+
+Table Contribution {
+  id String [pk]
+  userId String [not null]
+  eventId String
+  hours Int [default: 0]
+  points Int [default: 0]
+  verified Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  user User [not null]
+  event Event
+  validations Verification [not null]
+}
+
+Table Verification {
+  id String [pk]
+  contributionId String [not null]
+  verifierId String [not null]
+  status VerificationStatus [not null, default: 'PENDING']
+  createdAt DateTime [default: `now()`, not null]
+  contribution Contribution [not null]
+}
+
+Table Leaderboard {
+  id String [pk]
+  userId String [not null]
+  rank Int [not null]
+  points Int [not null]
+  hours Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  user User [not null]
+}
+
+Table Certificate {
+  id String [pk]
+  userId String [not null]
+  level CertificateLevel [not null]
+  issuedAt DateTime [default: `now()`, not null]
+  user User [not null]
+}
+
+Enum Role {
+  USER
+  ADMIN
+  ORG
+}
+
+Enum skills {
+  Academic
+  Art
+  Business
+  Communication
+  Computer
+  Cooking
+  Craft
+  Creative
+  Design
+  Engineering
+  Finance
+  Health
+  Language
+  Leadership
+  Legal
+  Management
+  Marketing
+  Music
+  Photography
+  Programming
+  Science
+  Social
+}
+
+Enum causes {
+  Animal
+  Arts
+  Children
+  Community
+  Crisis
+  Culture
+  Disability
+  Disaster
+  Education
+  Employment
+  Elderly
+  Environment
+  Health
+  Human
+  Humanitarian
+  International
+  Poverty
+  Rights
+  Social
+  Sports
+  Technology
+}
+
+Enum Visibility {
+  PUBLIC
+  PRIVATE
+}
+
+Enum EventStatus {
+  JOINED
+  COMPLETED
+  CANCELLED
+}
+
+Enum Urgency {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+Enum HelpStatus {
+  OPEN
+  CLOSED
+}
+
+Enum TeamType {
+  PUBLIC
+  PRIVATE
+}
+
+Enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+Enum CertificateLevel {
+  BRONZE
+  SILVER
+  GOLD
+}
+
+Ref: Event.createdById > User.id [delete: Set Null]
+
+Ref: Event.createdByTeamId > Team.id [delete: Set Null]
+
+Ref: UserEvent.userId > User.id
+
+Ref: UserEvent.eventId > Event.id
+
+Ref: Post.createdById > User.id
+
+Ref: Post.createdByTeamId > Team.id
+
+Ref: Comment.postId > Post.id
+
+Ref: Comment.userId > User.id
+
+Ref: Team.createdById > User.id
+
+Ref: TeamMember.userId > User.id
+
+Ref: TeamMember.teamId > Team.id
+
+Ref: Contribution.userId > User.id
+
+Ref: Contribution.eventId > Event.id
+
+Ref: Verification.contributionId > Contribution.id
+
+Ref: Leaderboard.userId > User.id
+
+Ref: Certificate.userId > User.id

@@ -12,8 +12,27 @@ app.use(
   cors({
     origin: 'http://localhost:3000',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true, // ✅ Allow sending cookies
   }),
 );
+
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//   res.header(
+//     'Access-Control-Allow-Origin',
+//     'https://hands-on-volunteering-platform-client.vercel.app',
+//   );
+//   res.header(
+//     'Access-Control-Allow-Methods',
+//     'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+//   );
+//   res.header(
+//     'Access-Control-Allow-Headers',
+//     'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+//   );
+//   res.header('Access-Control-Allow-Credentials', 'true'); // ✅ Important for authentication
+//   next();
+// });
+
 
 // Parser
 app.use(cookieParser());
