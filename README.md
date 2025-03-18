@@ -5,11 +5,14 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
 
+
+[Live](https://hands-on-volunteering-platform-server.vercel.app/)
+
 # Project Title
 
 A community-driven social volunteering platform that connects individuals with meaningful social impact opportunities. Users can discover and join volunteer-driven events, post requests for community help, form teams for large-scale initiatives, and track their impact with contributions logged on a personal and team level.
 
-
+<br> 
 
 
 ## Tech Stack
@@ -23,15 +26,28 @@ A community-driven social volunteering platform that connects individuals with m
 
 **Deployment:** Vercel, supabase(database), cloudinary(image)
 
+<br> 
+<br> 
 
 ## Api documentation
 
-- [Postman](https://github.com/mohammadShamimReza)
+- [Postman API documentation](https://documenter.getpostman.com/view/23321198/2sAYkDPLvv)
 
-## Schema
+
+<br> 
+<br> 
+
+
+
+## ERD diagram
 <p align="center">
   <img src="https://res.cloudinary.com/dqwnzs85c/image/upload/v1742305899/Untitled_khicnt.png" alt="Logo" >
 </p>
+
+
+<br> 
+<br> 
+
 
 ## Run Locally
 
@@ -60,13 +76,54 @@ Start the server
   npm run dev
 ```
 
+<br/>
+
+## Run in vercel
+
+Clone the project
+
+```bash
+  git clone git@github.com:mohammadShamimReza/hands-on-volunteering-platform-server.git
+```
+
+Go to the project directory
+
+```bash
+  cd hands-on-volunteering-platform-client
+```
+
+Install dependencies
+
+```bash
+  npm install
+```
+
+
+Start the server
+
+```bash
+  npm run build
+```
+
+
+Connect to vercel
+
+```bash
+  vercel
+```
+
+
+Make in production
+
+```bash
+  vercel --prod
+```
 
 
 ## Environment Variables
 
 To run this project, you will need to add the following environment variables to your `.env` file:
 
-`NEXT_PUBLIC_BACKEND_URL=[Your server site port/api/v1]`
 
 `DATABASE_URL=[Your Supabase connection pooling URL]`
 
@@ -102,9 +159,9 @@ To run this project, you will need to add the following environment variables to
 
 
 
-## Server
+## Client site code
 
-[Code](https://github.com/mohammadShamimReza/hands-on-volunteering-platform-server)
+[Code](https://github.com/mohammadShamimReza/hands-on-volunteering-platform-client)
 
 
 
