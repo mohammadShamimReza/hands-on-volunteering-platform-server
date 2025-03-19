@@ -24,6 +24,12 @@ A community-driven social volunteering platform that connects individuals with m
 
 <br> 
 
+## Api documentation
+
+- [Postman API documentation](https://documenter.getpostman.com/view/23321198/2sAYkDPLvv)
+
+
+
 
 ## Tech Stack
 
@@ -44,9 +50,6 @@ A community-driven social volunteering platform that connects individuals with m
 <br> 
 <br> 
 
-## Api documentation
-
-- [Postman API documentation](https://documenter.getpostman.com/view/23321198/2sAYkDPLvv)
 
 
 <br> 
