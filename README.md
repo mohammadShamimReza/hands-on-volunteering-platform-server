@@ -8,6 +8,16 @@
 
 [Live](https://volunteer.fitraat.com/)
 
+## Client site code
+
+[Code](https://github.com/mohammadShamimReza/hands-on-volunteering-platform-client)
+
+
+
+## Video preview
+
+[Video Preview](https://drive.google.com/file/d/1NBDSVtfziuYbi0Cww215l8ibRZUHqlj8/view?usp=sharing)
+
 # Project Title
 
 A community-driven social volunteering platform that connects individuals with meaningful social impact opportunities. Users can discover and join volunteer-driven events, post requests for community help, form teams for large-scale initiatives, and track their impact with contributions logged on a personal and team level.
