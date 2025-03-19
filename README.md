@@ -26,6 +26,11 @@ A community-driven social volunteering platform that connects individuals with m
 
 
 ## Tech Stack
+
+**Language:** JavaScript (TypeScript)
+
+**Client:** Next.js, Redux, TailwindCSS
+
 **Server:** Node.js (Express.js)
 
 **Database:** PostgreSQL(prisma)
@@ -34,7 +39,7 @@ A community-driven social volunteering platform that connects individuals with m
 
 **API Communication:** REST API
 
-**Deployment:** Vercel, supabase(database), cloudinary(image)
+**Deployment:** Vercel, supabase(database), cloudinary
 
 <br> 
 <br> 
