@@ -31,6 +31,8 @@ A community-driven social volunteering platform that connects individuals with m
 
 
 
+<br> 
+
 ## Tech Stack
 
 **Language:** JavaScript (TypeScript)
