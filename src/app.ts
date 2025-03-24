@@ -10,7 +10,7 @@ const app: Application = express();
 // CORS configuration
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: 'https://volunteer.fitraat.com',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true, // ✅ Allow sending cookies
   }),
