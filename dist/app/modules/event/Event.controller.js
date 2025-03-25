@@ -19,7 +19,6 @@ const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const Event_service_1 = require("./Event.service");
 const getAllFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { category, location, available } = req.query;
-    console.log(category, location, available, 'hit sis with availablit');
     const result = yield Event_service_1.eventService.getAllFromDb({
         category: category,
         location: location,

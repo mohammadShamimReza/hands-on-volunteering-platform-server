@@ -11,7 +11,8 @@ const index_js_1 = __importDefault(require("./app/routes/index.js"));
 const app = (0, express_1.default)();
 // CORS configuration
 app.use((0, cors_1.default)({
-    origin: 'https://volunteer.fitraat.com',
+    // origin: 'https://volunteer.fitraat.com',
+    origin: 'http://localhost:3000',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     credentials: true, // ✅ Allow sending cookies
 }));

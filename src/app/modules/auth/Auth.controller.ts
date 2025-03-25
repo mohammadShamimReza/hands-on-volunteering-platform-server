@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { Secret } from 'jsonwebtoken';
 import config from '../../../config/index';
-import ApiError from '../../../errors/ApiError';
 import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
@@ -47,7 +46,7 @@ const logIn = catchAsync(async (req: Request, res: Response) => {
 const me = catchAsync(async (req: Request, res: Response) => {
   const token = req.headers.authorization;
   if (!token) {
-    throw new ApiError(400, 'You are not authorized me');
+    return console.log('you are not authoraized');
   }
   const verifiedUser = jwtHelpers.verifyToken(
     token,

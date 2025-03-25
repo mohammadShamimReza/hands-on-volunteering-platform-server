@@ -25,7 +25,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const index_1 = __importDefault(require("../../../config/index"));
-const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const jwtHelpers_1 = require("../../../helpers/jwtHelpers");
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
@@ -68,7 +67,7 @@ const logIn = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, 
 const me = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const token = req.headers.authorization;
     if (!token) {
-        throw new ApiError_1.default(400, 'You are not authorized me');
+        return console.log('you are not authoraized');
     }
     const verifiedUser = jwtHelpers_1.jwtHelpers.verifyToken(token, index_1.default.jwt.secret);
     const result = yield Auth_service_1.AuthService.me(verifiedUser);

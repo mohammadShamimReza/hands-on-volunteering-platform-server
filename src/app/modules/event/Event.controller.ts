@@ -7,7 +7,6 @@ import { eventService } from './Event.service';
 
 const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
   const { category, location, available } = req.query;
-  console.log(category, location, available, 'hit sis with availablit');
 
   const result = await eventService.getAllFromDb({
     category: category as string,
