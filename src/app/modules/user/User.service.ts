@@ -30,13 +30,24 @@ const updateUser = async (
 };
 
 const deleteUsesr = async (id: string): Promise<User> => {
+  await prisma.userEvent.deleteMany({
+    where: {
+      userId: id,
+    },
+  });
+  await prisma.comment.deleteMany({
+    where: { userId: id },
+  });
+
   const result = await prisma.user.delete({
     where: {
       id,
     },
   });
+
   return result;
 };
+
 
 export const userService = {
   getAllFromDb,

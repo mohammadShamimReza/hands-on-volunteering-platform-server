@@ -1,5 +1,5 @@
 import { Contribution, PrismaClient } from '@prisma/client';
-import { differenceInHours } from 'date-fns';
+import { differenceInHours, differenceInMinutes } from 'date-fns';
 import { StatusCodes } from 'http-status-codes';
 import ApiError from '../../../errors/ApiError';
 
@@ -21,7 +21,6 @@ const getLogHours = async ({
     },
     select: {
       joinedAt: true,
-
       user: {
         select: {
           id: true,
@@ -37,10 +36,8 @@ const getLogHours = async ({
     },
   });
 
-  console.log(result);
-
   if (!result) {
-    return new ApiError(StatusCodes.NOT_FOUND, 'User event not found');
+    throw new ApiError(StatusCodes.NOT_FOUND, 'User event not found');
   }
 
   const { joinedAt, event } = result;
@@ -50,22 +47,20 @@ const getLogHours = async ({
   const calculationEndTime =
     event?.endDateTime && event.endDateTime < now ? event.endDateTime : now;
 
-  // ✅ Calculate hours volunteered
-  const hoursVolunteered = differenceInHours(
-    calculationEndTime,
-    new Date(joinedAt),
+  // ✅ Calculate minutes and convert to positive hours
+  const minutes = Math.abs(
+    differenceInMinutes(calculationEndTime, new Date(joinedAt)),
   );
 
-  console.log(result);
+  const hoursVolunteered = parseFloat((minutes / 60).toFixed(2));
 
   return {
     joinedAt,
     endDateTime: event?.endDateTime,
     hoursVolunteered,
-    user: result,
+    user: result.user,
   };
 };
-
 
 const getUserStats = async ({ userId }: { userId: string }) => {
   const userEvents = await prisma.userEvent.findMany({

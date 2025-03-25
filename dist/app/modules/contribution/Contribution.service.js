@@ -42,22 +42,21 @@ const getLogHours = (_a) => __awaiter(void 0, [_a], void 0, function* ({ userId,
             },
         },
     });
-    console.log(result);
     if (!result) {
-        return new ApiError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'User event not found');
+        throw new ApiError_1.default(http_status_codes_1.StatusCodes.NOT_FOUND, 'User event not found');
     }
     const { joinedAt, event } = result;
     const now = new Date();
     // ✅ Determine the correct end time for calculation
     const calculationEndTime = (event === null || event === void 0 ? void 0 : event.endDateTime) && event.endDateTime < now ? event.endDateTime : now;
-    // ✅ Calculate hours volunteered
-    const hoursVolunteered = (0, date_fns_1.differenceInHours)(calculationEndTime, new Date(joinedAt));
-    console.log(result);
+    // ✅ Calculate minutes and convert to positive hours
+    const minutes = Math.abs((0, date_fns_1.differenceInMinutes)(calculationEndTime, new Date(joinedAt)));
+    const hoursVolunteered = parseFloat((minutes / 60).toFixed(2));
     return {
         joinedAt,
         endDateTime: event === null || event === void 0 ? void 0 : event.endDateTime,
         hoursVolunteered,
-        user: result,
+        user: result.user,
     };
 });
 const getUserStats = (_a) => __awaiter(void 0, [_a], void 0, function* ({ userId }) {

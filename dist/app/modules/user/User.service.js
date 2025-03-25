@@ -34,6 +34,14 @@ const updateUser = (id, payload) => __awaiter(void 0, void 0, void 0, function* 
     return result;
 });
 const deleteUsesr = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma.userEvent.deleteMany({
+        where: {
+            userId: id,
+        },
+    });
+    yield prisma.comment.deleteMany({
+        where: { userId: id },
+    });
     const result = yield prisma.user.delete({
         where: {
             id,
